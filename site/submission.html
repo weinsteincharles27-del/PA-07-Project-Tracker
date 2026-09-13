@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Submission</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -87,7 +88,7 @@
       <div>
         <div class="card">
           <div class="card-head"><h2>Files</h2><span class="small muted">${sub.files.length}</span></div>
-          ${sub.files.length ? `<ul class="files">${sub.files.map((f) => `<li><span class="mono">${T.esc(f.name)}</span>${data.github ? `<a class="small" href="${data.blobUrl(f.path)}" target="_blank" rel="noopener">view</a>` : ""}<span class="size small">${T.fmtSize(f.size)}</span></li>`).join("")}</ul>` : `<p class="muted">No files beyond submission.md.</p>`}
+          ${sub.files.length ? `<ul class="files">${sub.files.map((f) => `<li>${T.fileLinks([f])}${data.github ? `<a class="small muted" href="${data.blobUrl(f.path)}" target="_blank" rel="noopener">GitHub</a>` : ""}<span class="size small">${T.fmtSize(f.size)}</span></li>`).join("")}</ul><p class="small muted" style="margin:8px 0 0">PDFs and images open right here; other files open in a new tab.</p>` : `<p class="muted">No files beyond submission.md.</p>`}
         </div>
         <div class="card">
           <div class="card-head"><h2>How this works</h2></div>
@@ -95,6 +96,8 @@
         </div>
       </div>
     </div>`;
+
+  T.wireFileButtons(page);
 
   // Build the markdown that would be written, and hand it to GitHub's editor.
   const build = () => {

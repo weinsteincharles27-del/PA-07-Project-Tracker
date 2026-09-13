@@ -27,8 +27,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0   # full history, so submission dates come from git
-      - name: Build index
-        run: python3 scripts/build.py
+      - name: Build index and copy submitted files into the site
+        run: python3 scripts/build.py --sync-files
       - name: Commit index if changed
         run: |
           # Ignore the generated_at line, so a run with no real change

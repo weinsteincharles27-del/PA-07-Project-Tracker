@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T17:42:23-04:00",
+  "generated_at": "2026-09-13T18:03:06-04:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -69,6 +69,11 @@
           "name": "lit-review.md",
           "path": "submissions/bryan/2026-08-26-lit-review/lit-review.md",
           "size": 123
+        },
+        {
+          "name": "lit-review.pdf",
+          "path": "submissions/bryan/2026-08-26-lit-review/lit-review.pdf",
+          "size": 713
         },
         {
           "name": "sources.csv",
@@ -453,6 +458,11 @@
           "name": "codebook.md",
           "path": "submissions/aanika/2026-09-10-dataset/codebook.md",
           "size": 128
+        },
+        {
+          "name": "codebook.pdf",
+          "path": "submissions/aanika/2026-09-10-dataset/codebook.pdf",
+          "size": 658
         },
         {
           "name": "polls.csv",

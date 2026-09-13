@@ -69,7 +69,7 @@ Checklist of happy and unhappy paths identified for the three pipeline scripts. 
 | P-44 | Every `status` in the sample index is one of the four allowed statuses | Yes |
 | P-45 | Every `member` referenced in the sample index exists in members.json | Yes |
 | P-46 | The sample index has no `assignments` key and every submission carries a non-empty typed assignment name | Yes |
-| P-47 | `scripts/mockup.py` runs to completion and writes 8 PNGs into `mockups/` (smoke test only, not tested deeply) | Yes |
+| P-47 | `scripts/mockup.py` runs to completion and writes 9 PNGs into `mockups/` (smoke test only, not tested deeply) | Yes |
 
 ## Round two: fix-specific regressions (submit.py validate/cleanup, build.py submitted_by)
 
@@ -89,3 +89,11 @@ Added after the round-one bug-fix pass (see the QA report for verdicts).
 - Manually exercising the three ways to submit described in README.md ("On GitHub, no git needed" and "Upload on GitHub"): these are the site's UI flows, not part of the Python scripts, and out of scope for this script-level suite (site behavior is covered separately in `tests/test_site.py`).
 - `submit.py --push`: constraints explicitly say never to pass `--push`; pushing would require a remote and is out of scope for a local QA pass.
 - Exact wall-clock/mtime-ordering races in `fs_dates` (e.g. two files written in the same microsecond): inherently flaky to construct deterministically and not worth the brittleness.
+
+## Sync files
+
+| id | path | covered |
+|---|---|---|
+| P-54 | `--sync-files` mirrors `<root>/submissions` into the site folder next to `--out`, replacing a previous copy | Yes |
+| P-55 | `--sync-files` with no submissions folder still creates an empty `site/submissions/` | Yes |
+

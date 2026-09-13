@@ -89,6 +89,11 @@ class ServedSiteTestCase(unittest.TestCase):
         cls.tmp = tempfile.mkdtemp(prefix="tracker-qa-")
         cls.root = os.path.join(cls.tmp, "site")
         shutil.copytree(SITE, cls.root)
+        # The sample files, served next to the site the way --sync-files does.
+        files_dir = os.path.join(cls.root, "submissions")
+        if os.path.isdir(files_dir):
+            shutil.rmtree(files_dir)
+        shutil.copytree(os.path.join(REPO, "fixtures", "submissions"), files_dir)
         cls.playwright = sync_playwright().start()
         cls.browser = cls.playwright.chromium.launch()
         cls.httpd, cls.port = serve(cls.root)
@@ -1361,3 +1366,73 @@ class TestNewAdversarialCases(ServedSiteTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ======================================================================
+# File viewer (S-107 .. S-111)
+# ======================================================================
+class TestFileViewer(ServedSiteTestCase):
+    def _pdf_sub(self):
+        return next(s for s in SAMPLE["submissions"] if any(f["name"].endswith(".pdf") for f in s["files"]))
+
+    def test_S107_pdf_button_on_dashboard_opens_viewer_without_navigating(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        sub = self._pdf_sub()
+        pdf = next(f for f in sub["files"] if f["name"].endswith(".pdf"))
+        page.click(f"button.filebtn[data-path='{pdf['path']}']")
+        page.wait_for_selector("#file-viewer:not([hidden])")
+        self.assertIn("index.html", page.url, "clicking a file button must not follow the row link")
+        src = page.get_attribute("#file-viewer iframe", "src")
+        self.assertTrue(src.endswith(pdf["path"]), src)
+        self.assertEqual(page.locator("#file-viewer .viewer-name").inner_text(), pdf["name"])
+        self.assertTrue(page.get_attribute("#file-viewer .viewer-open", "href").endswith(pdf["path"]))
+        self.assertEqual(page.get_attribute("#file-viewer .viewer-dl", "download"), pdf["name"])
+        self.assert_clean(page, "pdf viewer opens")
+
+    def test_S108_escape_and_close_button_close_the_viewer(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        page.click("button.filebtn.pdf >> nth=0")
+        page.wait_for_selector("#file-viewer:not([hidden])")
+        page.keyboard.press("Escape")
+        self.assertTrue(page.locator("#file-viewer").is_hidden())
+        self.assertEqual(page.locator("#file-viewer iframe").count(), 0, "the iframe is dropped on close")
+        page.click("button.filebtn.pdf >> nth=0")
+        page.wait_for_selector("#file-viewer:not([hidden])")
+        page.click("#file-viewer .viewer-close")
+        self.assertTrue(page.locator("#file-viewer").is_hidden())
+        self.assert_clean(page, "viewer closes")
+
+    def test_S109_non_pdf_file_is_a_new_tab_link_and_file_is_served(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        csv = next(f for s in SAMPLE["submissions"] for f in s["files"] if f["name"].endswith(".csv"))
+        link = page.locator(f"a.filebtn[href='{csv['path']}']").first
+        self.assertEqual(link.get_attribute("target"), "_blank")
+        resp = page.request.get(self.base + csv["path"])
+        self.assertEqual(resp.status, 200)
+        self.assertIn(",", resp.text())
+        self.assert_clean(page, "csv link")
+
+    def test_S110_submission_page_files_open_the_viewer(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        sub = self._pdf_sub()
+        self.goto(page, f"submission.html?as=prof-crain&id={sub['id'].replace('/', '%2F')}")
+        page.click("ul.files button.filebtn.pdf")
+        page.wait_for_selector("#file-viewer:not([hidden]) iframe")
+        self.assertIn("submission.html", page.url)
+        self.assert_clean(page, "detail page viewer")
+
+    def test_S111_member_can_open_their_own_pdf(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        sub = self._pdf_sub()
+        self.goto(page, f"index.html?as={sub['member']}")
+        page.click("button.filebtn.pdf >> nth=0")
+        page.wait_for_selector("#file-viewer:not([hidden]) iframe")
+        self.assert_clean(page, "member pdf viewer")

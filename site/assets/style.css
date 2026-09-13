@@ -270,3 +270,28 @@ table.list .empty td { color: var(--muted); text-align: center; padding: 28px; c
 .filelist li { display: flex; gap: 8px; padding: 3px 0; }
 .filelist .size { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
 .copy-ok { color: var(--success-ink); font-size: 12.5px; }
+
+/* File buttons and the pop-up viewer */
+.filebtn {
+  display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;
+  font: inherit; font-family: var(--mono); font-size: 12px; padding: 2px 8px; margin: 1px 0; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--hairline); background: var(--surface); color: var(--accent);
+}
+.filebtn:hover { background: var(--accent-soft); text-decoration: none; }
+.filebtn.pdf::before { content: "PDF"; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; margin-right: 6px; color: var(--ink-2); }
+.files-cell { max-width: 220px; }
+body.file-viewer-open { overflow: hidden; }
+.file-viewer {
+  position: fixed; inset: 0; z-index: 50; background: rgba(11, 11, 11, 0.55);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.file-viewer-box {
+  width: min(1100px, 100%); height: min(92vh, 100%); display: flex; flex-direction: column;
+  background: var(--surface); border-radius: var(--radius); border: 1px solid var(--hairline); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;
+}
+.file-viewer-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--hairline); }
+.file-viewer-head .viewer-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.file-viewer-body { flex: 1; min-height: 0; background: var(--surface-2); display: flex; align-items: center; justify-content: center; }
+.file-viewer-body iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+.file-viewer-body img { max-width: 100%; max-height: 100%; object-fit: contain; }
+@media (max-width: 760px) { .file-viewer { padding: 0; } .file-viewer-box { height: 100%; border-radius: 0; } }

@@ -8,5 +8,7 @@ __pycache__/
 ~$*
 
 # Local scratch
+# copied in by scripts/build.py --sync-files
+site/submissions/
 _build/
 site/data/index.json.tmp

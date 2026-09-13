@@ -696,14 +696,14 @@ class CrossCuttingTests(unittest.TestCase):
         for s in data["submissions"]:
             self.assertTrue(s["assignment"].strip(), s["id"])
 
-    def test_P47_mockup_runs_and_produces_8_pngs(self):
+    def test_P47_mockup_runs_and_produces_9_pngs(self):
         out_dir = os.path.join(REPO, "mockups")
         r = subprocess.run(
             [PYTHON, MOCKUP_PY], cwd=REPO, capture_output=True, text=True, timeout=120
         )
         self.assertEqual(r.returncode, 0, r.stderr)
         pngs = glob.glob(os.path.join(out_dir, "*.png"))
-        self.assertEqual(len(pngs), 8, pngs)
+        self.assertEqual(len(pngs), 9, pngs)
 
 
 # ---------------------------------------------------------------------------
@@ -711,8 +711,8 @@ class CrossCuttingTests(unittest.TestCase):
 #
 # Before the fix, `author` (the real git commit author) was used for
 # submitted_by even when the submission's dates were overridden by front
-# matter -- so a fixture dated by `submitted:` but committed by someone else
-# (say, whoever ran scripts/build.py's fixture-authoring commit) would show
+# matter, so a fixture dated by `submitted:` but committed by someone else
+# (say, whoever ran the fixture-authoring commit) would show
 # that committer's name instead of the submitting member's. The fix clears
 # `author` whenever front matter supplies the date. These tests build real
 # git history so `git_dates()` returns a real, distinctive author name, then
@@ -901,3 +901,34 @@ class SubmitCleanupTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SyncFilesTests(unittest.TestCase):
+    def test_P54_sync_files_mirrors_submissions_next_to_the_site(self):
+        tmp = tempfile.mkdtemp(prefix="tracker-sync-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        site = os.path.join(tmp, "site")
+        os.makedirs(os.path.join(site, "data"))
+        stale = os.path.join(site, "submissions", "old")
+        os.makedirs(stale)
+        write_text(os.path.join(stale, "leftover.txt"), "stale")
+        r = subprocess.run(
+            [sys.executable, BUILD_PY, "--root", os.path.join(REPO, "fixtures"), "--out", os.path.join(site, "data", "index.json"), "--sync-files"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("synced submissions/", r.stdout)
+        self.assertTrue(os.path.isfile(os.path.join(site, "submissions", "bryan", "2026-08-26-lit-review", "lit-review.pdf")))
+        self.assertFalse(os.path.exists(stale), "a previous copy is replaced, not merged")
+
+    def test_P55_sync_files_with_no_submissions_folder_makes_an_empty_one(self):
+        tmp = tempfile.mkdtemp(prefix="tracker-sync-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        root = os.path.join(tmp, "root"); site = os.path.join(tmp, "site")
+        os.makedirs(root); os.makedirs(os.path.join(site, "data"))
+        r = subprocess.run(
+            [sys.executable, BUILD_PY, "--root", root, "--out", os.path.join(site, "data", "index.json"), "--sync-files"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(os.path.isdir(os.path.join(site, "submissions")))
