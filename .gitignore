@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# macOS
+.DS_Store
+~$*
+
+# Local scratch
+_build/
+site/data/index.json.tmp

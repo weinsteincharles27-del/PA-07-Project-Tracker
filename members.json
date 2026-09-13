@@ -1,0 +1,47 @@
+{
+  "group": "PA-07 Project",
+  "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
+  "branch": "main",
+  "members": [
+    {
+      "id": "bryan",
+      "name": "Bryan",
+      "role": "member"
+    },
+    {
+      "id": "aanika",
+      "name": "Aanika",
+      "role": "member"
+    },
+    {
+      "id": "kiley",
+      "name": "Kiley",
+      "role": "member"
+    },
+    {
+      "id": "kayla",
+      "name": "Kayla",
+      "role": "member"
+    },
+    {
+      "id": "bode",
+      "name": "Bode",
+      "role": "member"
+    },
+    {
+      "id": "max",
+      "name": "Max",
+      "role": "member"
+    },
+    {
+      "id": "charlie",
+      "name": "Charlie",
+      "role": "admin"
+    },
+    {
+      "id": "prof-crain",
+      "name": "Prof. Crain",
+      "role": "admin"
+    }
+  ]
+}

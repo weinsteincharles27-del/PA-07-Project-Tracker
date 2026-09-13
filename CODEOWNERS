@@ -1,0 +1,3 @@
+# Reviews need an admin's approval before they merge (once branch protection
+# requires code-owner review). Replace the handles with the real GitHub logins.
+# reviews/  @charlie-github-login @crain-github-login
