@@ -5,5 +5,5 @@ reviewer: Prof. Crain
 
 ## 2026-09-03 Prof. Crain
 
-This is a list of sources rather than a review. Please add a paragraph per theme saying what the sources agree on and where they disagree.
+Sample review: please add a short paragraph per theme summarizing what the sources agree on and where they differ, then re-upload.
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T13:03:14-04:00",
+  "generated_at": "2026-09-13T17:27:49-04:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -227,7 +227,7 @@
       "updated": "2026-08-30",
       "dates_from": "front-matter",
       "submitted_by": "Kiley",
-      "notes": "Submitted two days after the due date.",
+      "notes": "Sample submission.",
       "body": "",
       "files": [
         {
@@ -244,7 +244,7 @@
           {
             "date": "2026-09-01",
             "author": "Charlie",
-            "text": "Approved. Please keep an eye on due dates for the next one; the memo builds on this so late work stacks up quickly."
+            "text": "Sample review: approved. The memo builds on this, so it is worth starting early."
           }
         ]
       }
@@ -259,7 +259,7 @@
       "updated": "2026-09-01",
       "dates_from": "front-matter",
       "submitted_by": "Bode",
-      "notes": "Late; had exam conflicts.",
+      "notes": "Sample submission.",
       "body": "",
       "files": [
         {
@@ -276,7 +276,7 @@
           {
             "date": "2026-09-03",
             "author": "Prof. Crain",
-            "text": "This is a list of sources rather than a review. Please add a paragraph per theme saying what the sources agree on and where they disagree."
+            "text": "Sample review: please add a short paragraph per theme summarizing what the sources agree on and where they differ, then re-upload."
           }
         ]
       }
