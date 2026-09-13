@@ -1,0 +1,595 @@
+{
+  "generated_at": "2026-09-13T12:40:13-04:00",
+  "group": "PA-07 Project",
+  "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
+  "branch": "main",
+  "members": [
+    {
+      "id": "bryan",
+      "name": "Bryan",
+      "role": "member"
+    },
+    {
+      "id": "aanika",
+      "name": "Aanika",
+      "role": "member"
+    },
+    {
+      "id": "kiley",
+      "name": "Kiley",
+      "role": "member"
+    },
+    {
+      "id": "kayla",
+      "name": "Kayla",
+      "role": "member"
+    },
+    {
+      "id": "bode",
+      "name": "Bode",
+      "role": "member"
+    },
+    {
+      "id": "max",
+      "name": "Max",
+      "role": "member"
+    },
+    {
+      "id": "charlie",
+      "name": "Charlie",
+      "role": "admin"
+    },
+    {
+      "id": "prof-crain",
+      "name": "Prof. Crain",
+      "role": "admin"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "A1",
+      "title": "Literature review",
+      "due": "2026-08-28"
+    },
+    {
+      "id": "A2",
+      "title": "Data collection memo",
+      "due": "2026-09-04"
+    },
+    {
+      "id": "A3",
+      "title": "Cleaned dataset + codebook",
+      "due": "2026-09-11"
+    },
+    {
+      "id": "A4",
+      "title": "Preliminary results",
+      "due": "2026-09-25"
+    },
+    {
+      "id": "A5",
+      "title": "Draft section",
+      "due": "2026-10-09"
+    }
+  ],
+  "statuses": [
+    "submitted",
+    "in-review",
+    "changes-requested",
+    "approved"
+  ],
+  "submissions": [
+    {
+      "id": "bryan/2026-08-26-lit-review",
+      "member": "bryan",
+      "folder": "2026-08-26-lit-review",
+      "title": "Literature review, first pass",
+      "assignment": "A1",
+      "submitted": "2026-08-26",
+      "updated": "2026-08-26",
+      "dates_from": "front-matter",
+      "submitted_by": "Bryan",
+      "notes": "Covers the competitiveness and redistricting literature.",
+      "body": "Twelve sources so far, grouped by question. Gaps flagged at the end.",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/bryan/2026-08-26-lit-review/lit-review.md",
+          "size": 123
+        },
+        {
+          "name": "sources.csv",
+          "path": "submissions/bryan/2026-08-26-lit-review/sources.csv",
+          "size": 111
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-08-29",
+            "author": "Prof. Crain",
+            "text": "Strong coverage of the redistricting literature and the grouping by question is exactly what we need. Approved. Carry the open questions at the end into the data memo."
+          }
+        ]
+      }
+    },
+    {
+      "id": "kayla/2026-08-27-lit-review",
+      "member": "kayla",
+      "folder": "2026-08-27-lit-review",
+      "title": "Literature review",
+      "assignment": "A1",
+      "submitted": "2026-08-27",
+      "updated": "2026-08-27",
+      "dates_from": "front-matter",
+      "submitted_by": "Kayla",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/kayla/2026-08-27-lit-review/lit-review.md",
+          "size": 123
+        },
+        {
+          "name": "sources.csv",
+          "path": "submissions/kayla/2026-08-27-lit-review/sources.csv",
+          "size": 111
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-08-29",
+            "author": "Prof. Crain",
+            "text": "Good. The annotated source list is a nice touch. Approved."
+          }
+        ]
+      }
+    },
+    {
+      "id": "aanika/2026-08-28-lit-review",
+      "member": "aanika",
+      "folder": "2026-08-28-lit-review",
+      "title": "Literature review",
+      "assignment": "A1",
+      "submitted": "2026-08-28",
+      "updated": "2026-08-28",
+      "dates_from": "front-matter",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/aanika/2026-08-28-lit-review/lit-review.md",
+          "size": 123
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-08-30",
+            "author": "Prof. Crain",
+            "text": "Well organized and the polling-error section is a useful addition. Approved."
+          }
+        ]
+      }
+    },
+    {
+      "id": "max/2026-08-28-lit-review",
+      "member": "max",
+      "folder": "2026-08-28-lit-review",
+      "title": "Literature review",
+      "assignment": "A1",
+      "submitted": "2026-08-28",
+      "updated": "2026-08-28",
+      "dates_from": "front-matter",
+      "submitted_by": "Max",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/max/2026-08-28-lit-review/lit-review.md",
+          "size": 123
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-08-31",
+            "author": "Charlie",
+            "text": "Approved. Nice synthesis of the incumbency literature."
+          }
+        ]
+      }
+    },
+    {
+      "id": "kiley/2026-08-30-lit-review",
+      "member": "kiley",
+      "folder": "2026-08-30-lit-review",
+      "title": "Literature review",
+      "assignment": "A1",
+      "submitted": "2026-08-30",
+      "updated": "2026-08-30",
+      "dates_from": "front-matter",
+      "submitted_by": "Kiley",
+      "notes": "Submitted two days after the due date.",
+      "body": "",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/kiley/2026-08-30-lit-review/lit-review.md",
+          "size": 123
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-09-01",
+            "author": "Charlie",
+            "text": "Approved. Please keep an eye on due dates for the next one; the memo builds on this so late work stacks up quickly."
+          }
+        ]
+      }
+    },
+    {
+      "id": "bode/2026-09-01-lit-review",
+      "member": "bode",
+      "folder": "2026-09-01-lit-review",
+      "title": "Literature review",
+      "assignment": "A1",
+      "submitted": "2026-09-01",
+      "updated": "2026-09-01",
+      "dates_from": "front-matter",
+      "submitted_by": "Bode",
+      "notes": "Late; had exam conflicts.",
+      "body": "",
+      "files": [
+        {
+          "name": "lit-review.md",
+          "path": "submissions/bode/2026-09-01-lit-review/lit-review.md",
+          "size": 123
+        }
+      ],
+      "status": "changes-requested",
+      "review": {
+        "status": "changes-requested",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-09-03",
+            "author": "Prof. Crain",
+            "text": "This is a list of sources rather than a review. Please add a paragraph per theme saying what the sources agree on and where they disagree."
+          }
+        ]
+      }
+    },
+    {
+      "id": "kayla/2026-09-02-data-memo",
+      "member": "kayla",
+      "folder": "2026-09-02-data-memo",
+      "title": "Data collection memo",
+      "assignment": "A2",
+      "submitted": "2026-09-02",
+      "updated": "2026-09-02",
+      "dates_from": "front-matter",
+      "submitted_by": "Kayla",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/kayla/2026-09-02-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-09-04",
+            "author": "Charlie",
+            "text": "Approved."
+          }
+        ]
+      }
+    },
+    {
+      "id": "bryan/2026-09-03-data-memo",
+      "member": "bryan",
+      "folder": "2026-09-03-data-memo",
+      "title": "Data collection memo",
+      "assignment": "A2",
+      "submitted": "2026-09-03",
+      "updated": "2026-09-07",
+      "dates_from": "front-matter",
+      "submitted_by": "Bryan",
+      "notes": "Second upload adds the Q2 FEC pull.",
+      "body": "Sources for results, finance, and polling, with update cadence for each.",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/bryan/2026-09-03-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "in-review",
+      "review": {
+        "status": "in-review",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-09-05",
+            "author": "Charlie",
+            "text": "The FEC section stops at Q1. Please add the Q2 quarterly filing (through June 30) and note the October refresh date. Everything else reads well."
+          },
+          {
+            "date": "2026-09-07",
+            "author": "Bryan",
+            "text": "Re-uploaded with the Q2 pull and the refresh calendar added at the end of the memo."
+          },
+          {
+            "date": "2026-09-08",
+            "author": "Charlie",
+            "text": "Thanks, taking another look this week."
+          }
+        ]
+      }
+    },
+    {
+      "id": "aanika/2026-09-04-data-memo",
+      "member": "aanika",
+      "folder": "2026-09-04-data-memo",
+      "title": "Data collection memo",
+      "assignment": "A2",
+      "submitted": "2026-09-04",
+      "updated": "2026-09-04",
+      "dates_from": "front-matter",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/aanika/2026-09-04-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-09-06",
+            "author": "Charlie",
+            "text": "Clear and complete. Approved."
+          }
+        ]
+      }
+    },
+    {
+      "id": "charlie/2026-09-04-data-memo",
+      "member": "charlie",
+      "folder": "2026-09-04-data-memo",
+      "title": "Data collection memo (Kalshi and Polymarket)",
+      "assignment": "A2",
+      "submitted": "2026-09-04",
+      "updated": "2026-09-04",
+      "dates_from": "front-matter",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/charlie/2026-09-04-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "approved",
+      "review": {
+        "status": "approved",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-09-05",
+            "author": "Prof. Crain",
+            "text": "Approved. Good that the live-market caveats are spelled out."
+          }
+        ]
+      }
+    },
+    {
+      "id": "kiley/2026-09-06-data-memo",
+      "member": "kiley",
+      "folder": "2026-09-06-data-memo",
+      "title": "Data collection memo",
+      "assignment": "A2",
+      "submitted": "2026-09-06",
+      "updated": "2026-09-06",
+      "dates_from": "front-matter",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/kiley/2026-09-06-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "bode/2026-09-08-data-memo",
+      "member": "bode",
+      "folder": "2026-09-08-data-memo",
+      "title": "Data collection memo",
+      "assignment": "A2",
+      "submitted": "2026-09-08",
+      "updated": "2026-09-08",
+      "dates_from": "front-matter",
+      "submitted_by": "Bode",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "memo.md",
+          "path": "submissions/bode/2026-09-08-data-memo/memo.md",
+          "size": 103
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-09-10-dataset",
+      "member": "aanika",
+      "folder": "2026-09-10-dataset",
+      "title": "Polling dataset and codebook",
+      "assignment": "A3",
+      "submitted": "2026-09-10",
+      "updated": "2026-09-10",
+      "dates_from": "front-matter",
+      "submitted_by": "Aanika",
+      "notes": "Includes every public poll since 2018.",
+      "body": "",
+      "files": [
+        {
+          "name": "codebook.md",
+          "path": "submissions/aanika/2026-09-10-dataset/codebook.md",
+          "size": 128
+        },
+        {
+          "name": "polls.csv",
+          "path": "submissions/aanika/2026-09-10-dataset/polls.csv",
+          "size": 53
+        }
+      ],
+      "status": "changes-requested",
+      "review": {
+        "status": "changes-requested",
+        "reviewer": "Prof. Crain",
+        "comments": [
+          {
+            "date": "2026-09-12",
+            "author": "Prof. Crain",
+            "text": "The codebook does not define the sample-size column or say whether the shares are registered or likely voters. Please add both and re-upload."
+          }
+        ]
+      }
+    },
+    {
+      "id": "bryan/2026-09-11-dataset",
+      "member": "bryan",
+      "folder": "2026-09-11-dataset",
+      "title": "Cleaned results dataset",
+      "assignment": "A3",
+      "submitted": "2026-09-11",
+      "updated": "2026-09-11",
+      "dates_from": "front-matter",
+      "submitted_by": "Bryan",
+      "notes": "Three cycles, district level.",
+      "body": "",
+      "files": [
+        {
+          "name": "codebook.md",
+          "path": "submissions/bryan/2026-09-11-dataset/codebook.md",
+          "size": 128
+        },
+        {
+          "name": "results.csv",
+          "path": "submissions/bryan/2026-09-11-dataset/results.csv",
+          "size": 120
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-09-11-dataset",
+      "member": "max",
+      "folder": "2026-09-11-dataset",
+      "title": "Finance dataset",
+      "assignment": "A3",
+      "submitted": "2026-09-11",
+      "updated": "2026-09-11",
+      "dates_from": "front-matter",
+      "submitted_by": "Max",
+      "notes": "FEC receipts and disbursements by quarter.",
+      "body": "",
+      "files": [
+        {
+          "name": "codebook.md",
+          "path": "submissions/max/2026-09-11-dataset/codebook.md",
+          "size": 128
+        },
+        {
+          "name": "finance.csv",
+          "path": "submissions/max/2026-09-11-dataset/finance.csv",
+          "size": 81
+        }
+      ],
+      "status": "in-review",
+      "review": {
+        "status": "in-review",
+        "reviewer": "Charlie",
+        "comments": [
+          {
+            "date": "2026-09-12",
+            "author": "Charlie",
+            "text": "Started reviewing. The merge keys line up with the results file so far; will finish by Monday."
+          }
+        ]
+      }
+    },
+    {
+      "id": "kayla/2026-09-12-dataset",
+      "member": "kayla",
+      "folder": "2026-09-12-dataset",
+      "title": "Turnout dataset",
+      "assignment": "A3",
+      "submitted": "2026-09-12",
+      "updated": "2026-09-12",
+      "dates_from": "front-matter",
+      "submitted_by": "Kayla",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "codebook.md",
+          "path": "submissions/kayla/2026-09-12-dataset/codebook.md",
+          "size": 128
+        },
+        {
+          "name": "turnout.csv",
+          "path": "submissions/kayla/2026-09-12-dataset/turnout.csv",
+          "size": 120
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    }
+  ]
+}
