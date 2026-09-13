@@ -21,7 +21,7 @@ Checklist of happy and unhappy paths identified for the three pipeline scripts. 
 
 | ID | Description | Covered |
 |----|--------------|---------|
-| P-11 | A submission folder with no `submission.md` is silently skipped | Yes |
+| P-11 | A folder with files but no `submission.md` is indexed with a title from its name, no assignment, and `has_metadata: false`; an empty or dot-prefixed folder is skipped; `title_from_folder` edge cases; `has_metadata: true` otherwise | Yes |
 | P-12 | A member folder not present in members.json prints a warning to stderr and is skipped | Yes |
 | P-13 | A review with an unknown `status:` prints a warning and falls back to `in-review` | Yes |
 | P-14 | A review file with no front matter at all (status defaults to in-review, reviewer defaults to the last comment's author) | Yes |

@@ -36,7 +36,9 @@ def _load_json(path):
 
 
 SAMPLE = _load_json(os.path.join(SITE, "data", "sample-index.json"))
-EMPTY = _load_json(os.path.join(SITE, "data", "index.json"))
+# The same roster and repo as the sample, with nothing submitted. Built here
+# rather than read from site/data/index.json, which fills up with real work.
+EMPTY = dict(json.loads(json.dumps(SAMPLE)), submissions=[])
 
 
 def clone(base):
@@ -1436,3 +1438,42 @@ class TestFileViewer(ServedSiteTestCase):
         page.click("button.filebtn.pdf >> nth=0")
         page.wait_for_selector("#file-viewer:not([hidden]) iframe")
         self.assert_clean(page, "member pdf viewer")
+
+
+# ======================================================================
+# Bare folders without submission.md (S-112, S-113)
+# ======================================================================
+class TestBareFolders(ServedSiteTestCase):
+    def _bare(self):
+        data = clone(SAMPLE)
+        bare = clone(data["submissions"][0])
+        bare.update({"id": "kayla/2026-09-13-web-upload", "member": "kayla", "folder": "2026-09-13-web-upload",
+                     "title": "Web upload", "assignment": "", "notes": "", "body": "", "has_metadata": False,
+                     "submitted": "2026-09-13", "updated": "2026-09-13", "status": "submitted", "review": None})
+        data["submissions"].append(bare)
+        return data, bare
+
+    def test_S112_bare_folder_shows_callout_with_submit_link_for_its_owner(self):
+        data, bare = self._bare()
+        self.write_data(data)
+        page = self.new_page()
+        self.goto(page, f"submission.html?as=kayla&id={bare['id'].replace('/', '%2F')}")
+        callout = page.locator(".callout.warn")
+        self.assertEqual(callout.count(), 1)
+        self.assertIn("no submission.md", callout.inner_text())
+        self.assertIn("submit.html", callout.locator("a").get_attribute("href"))
+        self.assert_clean(page, "bare folder callout owner")
+
+    def test_S113_bare_folder_renders_for_admin_with_no_assignment_chip(self):
+        data, bare = self._bare()
+        self.write_data(data)
+        page = self.new_page()
+        self.goto(page, f"submission.html?as=charlie&id={bare['id'].replace('/', '%2F')}")
+        self.assertIn("The submitter can add one", page.locator(".callout.warn").inner_text())
+        self.assertIn("no assignment", page.locator(".chip.assignment").inner_text())
+        page2 = self.new_page()
+        self.goto(page2, "index.html?as=charlie")
+        self.assertIn("Web upload", page2.locator("#table").inner_text())
+        self.assert_clean(page, "bare folder admin")
+        self.assert_clean(page2, "bare folder dashboard")
+

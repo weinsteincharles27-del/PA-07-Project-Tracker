@@ -105,6 +105,12 @@ def parse_review(path):
     }
 
 
+def title_from_folder(folder):
+    """'2026-09-13-pa-07-house-tracker' -> 'Pa 07 house tracker'."""
+    name = re.sub(r"^\d{4}-\d{2}-\d{2}-?", "", folder).replace("-", " ").replace("_", " ").strip()
+    return (name[:1].upper() + name[1:]) if name else folder
+
+
 def list_files(folder, root):
     out = []
     for name in sorted(os.listdir(folder)):
@@ -131,10 +137,18 @@ def build(root):
             continue
         for folder in sorted(os.listdir(mdir)):
             sdir = os.path.join(mdir, folder)
-            sub_md = os.path.join(sdir, "submission.md")
-            if not os.path.isdir(sdir) or not os.path.exists(sub_md):
+            if not os.path.isdir(sdir) or folder.startswith("."):
                 continue
-            meta, body = parse_front_matter(read(sub_md))
+            sub_md = os.path.join(sdir, "submission.md")
+            has_meta = os.path.exists(sub_md)
+            if has_meta:
+                meta, body = parse_front_matter(read(sub_md))
+            else:
+                # A bare folder (say, a web upload that skipped submission.md)
+                # still counts; the title comes from the folder name.
+                meta, body = {}, ""
+            if not has_meta and not list_files(sdir, root):
+                continue  # nothing in it at all
             submitted, updated, author = git_dates(sdir, root)
             source = "git"
             if not submitted:
@@ -158,8 +172,9 @@ def build(root):
                 "id": f"{member_id}/{folder}",
                 "member": member_id,
                 "folder": folder,
-                "title": meta.get("title", folder),
+                "title": meta.get("title") or title_from_folder(folder),
                 "assignment": meta.get("assignment", ""),
+                "has_metadata": has_meta,
                 "submitted": submitted,
                 "updated": updated,
                 "dates_from": source,

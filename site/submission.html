@@ -54,6 +54,7 @@
         <div><div class="k">Submitted by</div><div class="v">${T.esc(sub.submitted_by)}</div></div>
         <div><div class="k">Folder</div><div class="v mono small" style="font-weight:500">${T.esc(folder)}</div></div>
       </div>
+      ${sub.has_metadata === false ? `<p class="callout warn" style="margin:14px 0 0">This folder has no <code>submission.md</code>, so the title comes from the folder name and no assignment is set. ${sub.member === data.viewer.id ? `Add one from the <a href="${T.withViewer("submit.html", data)}">Submit page</a> (download it, then upload it into this folder).` : "The submitter can add one from the Submit page."}</p>` : ""}
       ${sub.notes ? `<p class="ink2" style="margin:14px 0 0">${T.esc(sub.notes)}</p>` : ""}
       ${sub.body ? `<div style="margin-top:12px;white-space:pre-wrap">${T.esc(sub.body)}</div>` : ""}
     </div>
