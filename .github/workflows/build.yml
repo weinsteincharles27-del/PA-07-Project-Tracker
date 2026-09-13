@@ -31,7 +31,9 @@ jobs:
         run: python3 scripts/build.py
       - name: Commit index if changed
         run: |
-          if git diff --quiet -- site/data/index.json; then
+          # Ignore the generated_at line, so a run with no real change
+          # does not add a commit.
+          if git diff --quiet -I '"generated_at"' -- site/data/index.json; then
             echo "index.json unchanged"
           else
             git config user.name "github-actions[bot]"
