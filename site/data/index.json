@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T18:02:00-04:00",
+  "generated_at": "2026-09-13T18:18:33-04:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -51,5 +51,29 @@
     "changes-requested",
     "approved"
   ],
-  "submissions": []
+  "submissions": [
+    {
+      "id": "charlie/2026-09-13-pa-07-house-prediction-market-tracker",
+      "member": "charlie",
+      "folder": "2026-09-13-pa-07-house-prediction-market-tracker",
+      "title": "Pa 07 house prediction market tracker",
+      "assignment": "",
+      "has_metadata": false,
+      "submitted": "2026-09-13",
+      "updated": "2026-09-13",
+      "dates_from": "git",
+      "submitted_by": "weinsteincharles27-del",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_House_Election_Tracker.xlsx",
+          "path": "submissions/charlie/2026-09-13-pa-07-house-prediction-market-tracker/PA07_House_Election_Tracker.xlsx",
+          "size": 222404
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    }
+  ]
 }

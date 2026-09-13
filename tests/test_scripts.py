@@ -231,13 +231,39 @@ class HappyPathTests(TempDirMixin, unittest.TestCase):
 # Unhappy paths, build.py (P-11 .. P-29)
 # ---------------------------------------------------------------------------
 class BuildUnhappyPathTests(TempDirMixin, unittest.TestCase):
-    def test_P11_submission_folder_without_submission_md_is_skipped(self):
+    def test_P11_bare_folder_without_submission_md_is_indexed_from_its_name(self):
+        # A web upload that skipped submission.md still counts.
         root = self.mkdtemp()
-        d = os.path.join(root, "submissions", "bryan", "2026-01-01-nofile")
+        d = os.path.join(root, "submissions", "bryan", "2026-01-01-pa-07_house-tracker")
         os.makedirs(d)
         write_text(os.path.join(d, "notes.txt"), "hi")
         data = bm.build(root)
-        self.assertEqual(data["submissions"], [])
+        self.assertEqual(len(data["submissions"]), 1)
+        sub = data["submissions"][0]
+        self.assertEqual(sub["title"], "Pa 07 house tracker")
+        self.assertEqual(sub["assignment"], "")
+        self.assertFalse(sub["has_metadata"])
+        self.assertEqual([f["name"] for f in sub["files"]], ["notes.txt"])
+        self.assertEqual(sub["submitted_by"], "Bryan")
+
+    def test_P11b_empty_bare_folder_is_skipped(self):
+        root = self.mkdtemp()
+        os.makedirs(os.path.join(root, "submissions", "bryan", "2026-01-01-empty"))
+        os.makedirs(os.path.join(root, "submissions", "bryan", ".hidden"))
+        self.assertEqual(bm.build(root)["submissions"], [])
+
+    def test_P11c_title_from_folder_edge_cases(self):
+        self.assertEqual(bm.title_from_folder("2026-09-13-memo"), "Memo")
+        self.assertEqual(bm.title_from_folder("2026-09-13"), "2026-09-13")
+        self.assertEqual(bm.title_from_folder("no-date-here"), "No date here")
+        self.assertEqual(bm.title_from_folder("2026-09-13-"), "2026-09-13-")
+
+    def test_P11d_submission_with_metadata_reports_has_metadata(self):
+        root = self.mkdtemp()
+        write_submission(root, "bryan", "2026-01-01-x", {"title": "X", "assignment": "Memo"})
+        sub = bm.build(root)["submissions"][0]
+        self.assertTrue(sub["has_metadata"])
+        self.assertEqual(sub["title"], "X")
 
     def test_P12_unknown_member_folder_warns_and_skips(self):
         root = self.mkdtemp()
@@ -327,7 +353,7 @@ class BuildUnhappyPathTests(TempDirMixin, unittest.TestCase):
         write_text(os.path.join(d, "submission.md"), "---\n---\n")
         data = bm.build(root)
         self.assertEqual(len(data["submissions"]), 1)
-        self.assertEqual(data["submissions"][0]["title"], "2026-01-01-empty")  # falls back to folder name
+        self.assertEqual(data["submissions"][0]["title"], "Empty")  # derived from the folder name
 
     def test_P20_folder_name_with_spaces_and_unicode(self):
         root = self.mkdtemp()

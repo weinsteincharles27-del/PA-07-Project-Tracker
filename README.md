@@ -59,6 +59,10 @@ Three ways to get it into the repo. Pick whichever you are comfortable with.
    python3 scripts/submit.py --as bryan --assignment "Data collection memo" --title "Sources and update cadence" memo.md --push
    ```
 
+If a folder has files but no `submission.md` (say, a quick web upload), it
+still shows up: the title comes from the folder name and the assignment is
+blank until a `submission.md` is added to the folder.
+
 To revise a submission, change the files in the same folder and commit again.
 The tracker shows both the original date and the latest revision date.
 Renaming a submission folder resets its dates and detaches its review, since

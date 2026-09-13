@@ -168,3 +168,10 @@ out in that review.
 | S-110 | File buttons on the submission page open the viewer | yes |
 | S-111 | A member can open their own PDF | yes |
 
+## Bare folders
+
+| id | path | covered |
+|---|---|---|
+| S-112 | A submission without `submission.md` shows a callout on its page with a Submit-page link for its owner | yes |
+| S-113 | The same submission renders for an admin with a "no assignment" chip and appears on the dashboard | yes |
+
