@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submission</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner"></div></header>
+<main class="page" id="page"></main>
+
+<script src="assets/app.js"></script>
+<script>
+(async function () {
+  const T = window.Tracker;
+  let data;
+  try { data = await T.load(); } catch (e) { return T.fail(e); }
+  const page = document.getElementById("page");
+  const id = new URLSearchParams(location.search).get("id");
+  const sub = data.submissions.find((s) => s.id === id);
+  const back = `<p><a href="${T.withViewer("index.html", data)}">&larr; Dashboard</a></p>`;
+
+  if (!sub) {
+    page.innerHTML = `${back}<div class="card"><h2>Submission not found</h2><p class="ink2">Nothing in the index matches <code>${T.esc(id || "")}</code>.</p></div>`;
+    return;
+  }
+  if (!data.isAdmin && sub.member !== data.viewer.id) {
+    page.innerHTML = `${back}<div class="card"><h2>You do not have access to this submission</h2><p class="ink2">Members can only open their own work. Admins (Charlie and Prof. Crain) can open everything.</p></div>`;
+    return;
+  }
+
+  const owner = data.memberById[sub.member];
+  const a = data.assignmentById[sub.assignment];
+  const late = a ? T.daysBetween(a.due, sub.submitted) : 0;
+  const folder = `submissions/${sub.member}/${sub.folder}`;
+  const reviewPath = `reviews/${sub.member}/${sub.folder}.md`;
+  const comments = sub.review?.comments || [];
+  const isAuthor = (name) => (data.members.find((m) => m.name === name) || {}).role === "admin";
+
+  page.innerHTML = `
+    ${back}
+    <div class="page-head">
+      <div>
+        <h1>${T.esc(sub.title)}</h1>
+        <div class="btn-row" style="margin-top:6px">${T.personChip(data, sub.member)} ${T.assignmentChip(data, sub.assignment)} <span class="small ink2">${T.esc(a ? a.title : "")}</span> ${T.chip(sub.status)}</div>
+      </div>
+      ${data.github ? `<a class="btn" href="${data.treeUrl(folder)}" target="_blank" rel="noopener">Open folder on GitHub</a>` : ""}
+    </div>
+
+    <div class="card">
+      <div class="meta">
+        <div><div class="k">Submitted</div><div class="v tnum">${T.fmtDateLong(sub.submitted)}${late > 0 ? ` <span class="small" style="color:var(--st-changes-requested)">${late}d late</span>` : a ? ` <span class="small muted">due ${T.fmtDate(a.due)}</span>` : ""}</div></div>
+        <div><div class="k">Last updated</div><div class="v tnum">${sub.updated !== sub.submitted ? T.fmtDateLong(sub.updated) : '<span class="muted">No revisions</span>'}</div></div>
+        <div><div class="k">Submitted by</div><div class="v">${T.esc(sub.submitted_by)}</div></div>
+        <div><div class="k">Folder</div><div class="v mono small" style="font-weight:500">${T.esc(folder)}</div></div>
+      </div>
+      ${sub.notes ? `<p class="ink2" style="margin:14px 0 0">${T.esc(sub.notes)}</p>` : ""}
+      ${sub.body ? `<div style="margin-top:12px;white-space:pre-wrap">${T.esc(sub.body)}</div>` : ""}
+    </div>
+
+    <div class="grid two section">
+      <div>
+        <div class="card">
+          <div class="card-head"><h2>Review thread</h2><span class="small muted">${comments.length} comment${comments.length === 1 ? "" : "s"}${sub.review?.reviewer ? `, reviewer ${T.esc(sub.review.reviewer)}` : ""}</span></div>
+          ${comments.length ? `<ul class="thread">${comments.map((c) => `
+            <li>
+              <div class="avatar ${isAuthor(c.author) ? "admin" : ""}">${T.esc(T.initials(c.author))}</div>
+              <div><div class="who"><span class="name">${T.esc(c.author)}</span><span class="when">${T.fmtDateLong(c.date)}</span>${isAuthor(c.author) ? '<span class="role admin">admin</span>' : ""}</div><div class="text">${T.esc(c.text)}</div></div>
+            </li>`).join("")}</ul>` : `<p class="muted">No review yet. ${data.isAdmin ? "Add the first comment below." : "An admin will comment here."}</p>`}
+        </div>
+
+        <div class="card" id="comment-card">
+          <div class="card-head"><h2>${data.isAdmin ? "Add a review comment" : "Reply"}</h2></div>
+          ${data.isAdmin ? `
+          <div class="field"><label for="c-status">Status</label>
+            <select id="c-status">${T.ORDER.map((st) => `<option value="${st}" ${st === sub.status ? "selected" : ""}>${T.STATUS[st].label}</option>`).join("")}</select>
+            <span class="help">Members can only reply; the status is set by admins.</span></div>` : ""}
+          <div class="field"><label for="c-text">Comment</label><textarea id="c-text" placeholder="What should change, or what is good to go."></textarea></div>
+          <div class="btn-row">
+            <button class="btn primary" id="c-save">${sub.review ? "Add to review on GitHub" : "Create review on GitHub"}</button>
+            <button class="btn" id="c-copy">Copy as markdown</button>
+            <span class="small muted">Saved as <code>${T.esc(reviewPath)}</code></span>
+          </div>
+          <div id="c-preview" class="section" hidden><h3>What will be saved</h3><pre id="c-pre"></pre></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-head"><h2>Files</h2><span class="small muted">${sub.files.length}</span></div>
+          ${sub.files.length ? `<ul class="files">${sub.files.map((f) => `<li><span class="mono">${T.esc(f.name)}</span>${data.github ? `<a class="small" href="${data.blobUrl(f.path)}" target="_blank" rel="noopener">view</a>` : ""}<span class="size small">${T.fmtSize(f.size)}</span></li>`).join("")}</ul>` : `<p class="muted">No files beyond submission.md.</p>`}
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>How this works</h2></div>
+          <p class="small ink2">Each submission is a folder in git. The date markers come from the commits that added and last changed the folder, so they cannot be edited after the fact. Reviews are a markdown file next to it; each <code>##</code> heading is one dated comment.</p>
+        </div>
+      </div>
+    </div>`;
+
+  // Build the markdown that would be written, and hand it to GitHub's editor.
+  const build = () => {
+    const text = document.getElementById("c-text").value.trim();
+    const status = data.isAdmin ? document.getElementById("c-status").value : (sub.review?.status || "submitted");
+    const reviewer = data.isAdmin ? data.viewer.name : (sub.review?.reviewer || "");
+    const entry = `## ${data.today} ${data.viewer.name}\n\n${text || "(your comment)"}\n`;
+    const full = `---\nstatus: ${status}\nreviewer: ${reviewer}\n---\n\n${entry}`;
+    return { text, status, entry, full };
+  };
+  const preview = () => {
+    const b = build();
+    document.getElementById("c-preview").hidden = false;
+    document.getElementById("c-pre").textContent = sub.review ? `(append to ${reviewPath}, and set status: ${b.status} in the front matter)\n\n${b.entry}` : b.full;
+  };
+  document.getElementById("c-text").addEventListener("input", preview);
+  if (data.isAdmin) document.getElementById("c-status").addEventListener("change", preview);
+  document.getElementById("c-copy").addEventListener("click", (e) => { const b = build(); T.copyText(sub.review ? b.entry : b.full, e.target); preview(); });
+  document.getElementById("c-save").addEventListener("click", (e) => {
+    const b = build();
+    if (!b.text) { document.getElementById("c-text").focus(); return; }
+    if (!data.github) { preview(); return; }
+    if (sub.review) {
+      // GitHub's editor cannot be prefilled for an existing file, so copy the entry and open the editor.
+      T.copyText(b.entry, e.target);
+      window.open(`${data.github}/edit/${data.branch}/${reviewPath}`, "_blank", "noopener");
+    } else {
+      const url = `${data.github}/new/${data.branch}/reviews/${sub.member}?filename=${encodeURIComponent(sub.folder + ".md")}&value=${encodeURIComponent(b.full)}`;
+      window.open(url, "_blank", "noopener");
+    }
+    preview();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner"></div></header>
+<main class="page" id="page"></main>
+
+<script src="assets/app.js"></script>
+<script>
+(async function () {
+  const T = window.Tracker;
+  let data;
+  try { data = await T.load(); } catch (e) { return T.fail(e); }
+  const page = document.getElementById("page");
+  const params = new URLSearchParams(location.search);
+  const me = data.viewer;
+  const done = new Set(data.submissions.filter((s) => s.member === me.id).map((s) => s.assignment));
+
+  page.innerHTML = `
+    <div class="page-head">
+      <div><h1>Submit work</h1><p class="lede">Submitting as <b>${T.esc(me.name)}</b>. Your work lands in <code>submissions/${T.esc(me.id)}/</code>, stamped with the date it was committed.</p></div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="field"><label for="s-assignment">Assignment</label>
+          <select id="s-assignment">${data.assignments.map((a) => `<option value="${a.id}" ${params.get("assignment") === a.id ? "selected" : ""}>${T.esc(a.id)} ${T.esc(a.title)}, due ${T.fmtDate(a.due)}${done.has(a.id) ? " (already submitted, this adds a revision)" : ""}</option>`).join("")}</select></div>
+        <div class="field"><label for="s-title">Title</label><input id="s-title" placeholder="What is this? For example: Literature review, first pass"><span class="help">Short and specific. It becomes the folder name.</span></div>
+        <div class="field"><label for="s-notes">One-line note (optional)</label><input id="s-notes" placeholder="Anything the reviewer should know up front"></div>
+        <div class="field"><label for="s-body">Description (optional)</label><textarea id="s-body" placeholder="What you did, what is still open, what you want feedback on."></textarea></div>
+        <div class="field"><label for="s-files">Files</label><input id="s-files" type="file" multiple><span class="help">Anything: .md, .csv, .xlsx, .pdf, .ipynb, images. Keep single files under 100 MB (GitHub's limit).</span><ul class="filelist" id="s-filelist"></ul></div>
+        <div class="btn-row">
+          <button class="btn primary" id="s-go">Upload on GitHub</button>
+          <a class="btn" id="s-download" download="submission.md">Download submission.md</a>
+          <span class="small muted" id="s-hint"></span>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-head"><h2>What gets created</h2></div>
+          <div class="tree" id="s-tree"></div>
+          <h3 class="section">submission.md</h3>
+          <pre id="s-preview"></pre>
+        </div>
+        <div class="card">
+          <div class="tabs"><button class="active" data-tab="web">On GitHub</button><button data-tab="git">Terminal</button><button data-tab="script">Helper script</button></div>
+          <div data-panel="web">
+            <ol class="steps">
+              <li><div><b>Download submission.md</b> using the button on the left. It carries the title, assignment, and notes.</div></li>
+              <li><div><b>Click Upload on GitHub.</b> It opens the upload page already pointed at your folder.</div></li>
+              <li><div><b>Drop in submission.md and your files</b>, use the commit message shown below, and press <b>Commit changes</b>.</div></li>
+            </ol>
+            <p class="small ink2" style="margin-top:10px">Commit message: <code id="s-msg"></code></p>
+          </div>
+          <div data-panel="git" hidden>
+            <p class="small ink2">If you work with git locally, from the repo root:</p>
+            <pre id="s-git"></pre>
+            <div class="btn-row" style="margin-top:8px"><button class="btn small" id="s-copy-git">Copy commands</button></div>
+          </div>
+          <div data-panel="script" hidden>
+            <p class="small ink2">Or let the helper do the folder, submission.md, commit, and push in one go:</p>
+            <pre id="s-script"></pre>
+            <div class="btn-row" style="margin-top:8px"><button class="btn small" id="s-copy-script">Copy command</button></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const $ = (id) => document.getElementById(id);
+  let files = [];
+  $("s-files").addEventListener("change", (e) => { files = Array.from(e.target.files); render(); });
+  ["s-assignment", "s-title", "s-notes", "s-body"].forEach((id) => $(id).addEventListener("input", render));
+  page.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+    page.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("active", x === b));
+    page.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== b.dataset.tab));
+  }));
+
+  function build() {
+    const a = data.assignmentById[$("s-assignment").value];
+    const title = $("s-title").value.trim() || a.title;
+    const notes = $("s-notes").value.trim();
+    const body = $("s-body").value.trim();
+    const folder = `${data.today}-${T.slug(title)}`;
+    const path = `submissions/${me.id}/${folder}`;
+    const md = `---\ntitle: ${title}\nassignment: ${a.id}\n${notes ? `notes: ${notes}\n` : ""}---\n${body ? body + "\n" : ""}`;
+    const msg = `${me.name}: ${a.id} ${title}`;
+    const q = (s) => `'${s.replace(/'/g, "'\\''")}'`;
+    const git = [`mkdir -p ${path}`, `# save submission.md there, then copy your files in`, `git add ${path}`, `git commit -m ${q(msg)}`, `git push`].join("\n");
+    const script = `python3 scripts/submit.py --as ${me.id} --assignment ${a.id} --title ${q(title)}${notes ? ` --notes ${q(notes)}` : ""} ${files.length ? files.map((f) => q(f.name)).join(" ") : "<your files>"} --push`;
+    return { a, title, notes, body, folder, path, md, msg, git, script };
+  }
+
+  function render() {
+    const b = build();
+    $("s-tree").innerHTML = `submissions/<br>&nbsp;&nbsp;${T.esc(me.id)}/<br>&nbsp;&nbsp;&nbsp;&nbsp;<b>${T.esc(b.folder)}/</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>submission.md</b>${files.map((f) => `<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${T.esc(f.name)}`).join("")}${files.length ? "" : '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="muted">your files</span>'}`;
+    $("s-preview").textContent = b.md;
+    $("s-msg").textContent = b.msg;
+    $("s-git").textContent = b.git;
+    $("s-script").textContent = b.script;
+    $("s-filelist").innerHTML = files.map((f) => `<li><span class="mono">${T.esc(f.name)}</span><span class="size">${T.fmtSize(f.size)}</span></li>`).join("");
+    $("s-download").href = `data:text/markdown;charset=utf-8,${encodeURIComponent(b.md)}`;
+    $("s-hint").textContent = data.github ? `Goes to ${data.repo} on branch ${data.branch}` : "No repo configured in members.json";
+  }
+  render();
+
+  $("s-go").addEventListener("click", () => {
+    const b = build();
+    if (!$("s-title").value.trim()) { $("s-title").focus(); $("s-hint").textContent = "Give it a title first."; return; }
+    if (!data.github) return;
+    window.open(`${data.github}/upload/${data.branch}/${b.path}`, "_blank", "noopener");
+  });
+  $("s-copy-git").addEventListener("click", (e) => T.copyText(build().git, e.target));
+  $("s-copy-script").addEventListener("click", (e) => T.copyText(build().script, e.target));
+})();
+</script>
+</body>
+</html>

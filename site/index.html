@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner"></div></header>
+<main class="page" id="page"></main>
+
+<script src="assets/app.js"></script>
+<script>
+(async function () {
+  const T = window.Tracker;
+  let data;
+  try { data = await T.load(); } catch (e) { return T.fail(e); }
+  const page = document.getElementById("page");
+  const subs = data.visible.slice().sort((a, b) => (b.updated || "").localeCompare(a.updated || "") || (b.submitted || "").localeCompare(a.submitted || ""));
+  const count = (st) => subs.filter((s) => s.status === st).length;
+
+  const tiles = `
+    <div class="tiles">
+      ${T.ORDER.map((st) => `
+        <div class="tile">
+          <div class="label"><span class="dot" style="--c:${T.STATUS[st].color}"></span>${T.STATUS[st].label}</div>
+          <div class="value">${count(st)}</div>
+          <div class="hint">of ${subs.length} submission${subs.length === 1 ? "" : "s"}</div>
+        </div>`).join("")}
+    </div>`;
+
+  // Admin view: everyone's work, a coverage grid, filters.
+  if (data.isAdmin) {
+    const members = data.members;
+    const people = new Set(subs.map((s) => s.member)).size;
+    const cell = (m, a) => {
+      const mine = subs.filter((s) => s.member === m.id && s.assignment === a.id);
+      if (mine.length) {
+        const s = mine.sort((x, y) => y.submitted.localeCompare(x.submitted))[0];
+        const late = T.daysBetween(a.due, s.submitted) > 0;
+        return `<a class="cell" href="${T.detailHref(data, s)}" title="${T.esc(s.title)}"><span class="dot" style="--c:${T.STATUS[s.status].color}"></span><span class="tnum ${late ? "late" : ""}">${T.fmtDate(s.submitted)}${late ? " (late)" : ""}</span></a>`;
+      }
+      const d = T.daysBetween(data.today, a.due);
+      if (m.role === "admin") return `<span class="cell missing">&middot;</span>`;
+      return d < 0 ? `<span class="cell late">missing, ${-d}d overdue</span>` : `<span class="cell missing">due in ${d}d</span>`;
+    };
+    const coverage = `
+      <div class="card">
+        <div class="card-head"><h2>Coverage by assignment</h2><span class="small muted">Latest submission per person and assignment. Due dates under each column.</span></div>
+        <div style="overflow-x:auto"><table class="coverage">
+          <thead><tr><th>Person</th>${data.assignments.map((a) => `<th>${T.esc(a.id)} ${T.esc(a.title)}<span class="due">due ${T.fmtDate(a.due)}</span></th>`).join("")}</tr></thead>
+          <tbody>${members.map((m) => `<tr><td>${T.esc(m.name)}${m.role === "admin" ? ' <span class="role admin" style="margin-left:6px">admin</span>' : ""}</td>${data.assignments.map((a) => `<td>${cell(m, a)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table></div>
+      </div>`;
+
+    page.innerHTML = `
+      <div class="page-head">
+        <div><h1>All submissions</h1><p class="lede">Reviewing as ${T.esc(data.viewer.name)}. ${subs.length} submissions from ${people} people, ${count("submitted") + count("in-review")} waiting on a review.</p></div>
+        <a class="btn" href="${T.withViewer("timeline.html", data)}">View timeline</a>
+      </div>
+      ${tiles}
+      ${coverage}
+      <div class="card">
+        <div class="card-head"><h2>Submissions</h2></div>
+        <div class="filters">
+          <select id="f-person"><option value="">Everyone</option>${members.map((m) => `<option value="${m.id}">${T.esc(m.name)}</option>`).join("")}</select>
+          <select id="f-assignment"><option value="">All assignments</option>${data.assignments.map((a) => `<option value="${a.id}">${T.esc(a.id)} ${T.esc(a.title)}</option>`).join("")}</select>
+          <select id="f-status"><option value="">Any status</option>${T.ORDER.map((st) => `<option value="${st}">${T.STATUS[st].label}</option>`).join("")}</select>
+          <span class="count" id="f-count"></span>
+        </div>
+        <div id="table"></div>
+      </div>`;
+
+    const draw = () => {
+      const p = document.getElementById("f-person").value, a = document.getElementById("f-assignment").value, st = document.getElementById("f-status").value;
+      const rows = subs.filter((s) => (!p || s.member === p) && (!a || s.assignment === a) && (!st || s.status === st));
+      document.getElementById("f-count").textContent = `${rows.length} of ${subs.length}`;
+      const t = document.getElementById("table");
+      t.innerHTML = T.submissionTable(data, rows, { showPerson: true, emptyText: "Nothing matches these filters." });
+      T.wireRowLinks(t);
+    };
+    ["f-person", "f-assignment", "f-status"].forEach((id) => document.getElementById(id).addEventListener("change", draw));
+    draw();
+    return;
+  }
+
+  // Member view: only their own work, plus what is due next.
+  const done = new Set(subs.map((s) => s.assignment));
+  const upcoming = data.assignments.filter((a) => !done.has(a.id)).sort((x, y) => x.due.localeCompare(y.due));
+  const needsWork = subs.filter((s) => s.status === "changes-requested");
+  page.innerHTML = `
+    <div class="page-head">
+      <div><h1>Your submissions</h1><p class="lede">Signed in as ${T.esc(data.viewer.name)}. Only you and the admins (Charlie, Prof. Crain) can see this page.</p></div>
+      <a class="btn primary" href="${T.withViewer("submit.html", data)}">Submit work</a>
+    </div>
+    ${tiles}
+    <div class="grid wide">
+      <div class="card">
+        <div class="card-head"><h2>Submitted</h2></div>
+        <div id="table"></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-head"><h2>Still to submit</h2></div>
+          ${upcoming.length ? `<table class="list"><tbody>${upcoming.map((a) => {
+            const d = T.daysBetween(data.today, a.due);
+            return `<tr data-href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}"><td class="title"><a href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}">${T.esc(a.id)} ${T.esc(a.title)}</a></td><td class="date ${d < 0 ? "" : ""}">${d < 0 ? `<span style="color:var(--st-changes-requested)">${-d}d overdue</span>` : d === 0 ? "due today" : `due ${T.fmtDate(a.due)} (${d}d)`}</td></tr>`;
+          }).join("")}</tbody></table>` : `<p class="muted">Everything has been submitted.</p>`}
+        </div>
+        ${needsWork.length ? `<div class="card"><div class="card-head"><h2>Needs your attention</h2></div><ul class="files">${needsWork.map((s) => `<li><span class="dot" style="--c:${T.STATUS[s.status].color}"></span><a href="${T.detailHref(data, s)}">${T.esc(s.title)}</a><span class="size">${T.esc(s.review?.reviewer || "")}</span></li>`).join("")}</ul></div>` : ""}
+      </div>
+    </div>`;
+  const t = document.getElementById("table");
+  t.innerHTML = T.submissionTable(data, subs, { emptyText: "You have not submitted anything yet. Use Submit work to add your first one." });
+  T.wireRowLinks(page);
+})();
+</script>
+</body>
+</html>
