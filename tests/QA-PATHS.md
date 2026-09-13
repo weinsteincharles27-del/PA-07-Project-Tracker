@@ -175,3 +175,30 @@ out in that review.
 | S-112 | A submission without `submission.md` shows a callout on its page with a Submit-page link for its owner | yes |
 | S-113 | The same submission renders for an admin with a "no assignment" chip and appears on the dashboard | yes |
 
+## Uploading from the site
+
+| id | path | covered |
+|---|---|---|
+| S-114 | With `upload_url` configured, the Submit page shows a passcode field, an Upload button, and demotes the GitHub flow to "Other ways to submit" | yes |
+| S-115 | Missing files or passcode are caught on the client; nothing is posted | yes |
+| S-116 | Upload posts a multipart form (member, passcode, assignment, title, notes, files) and shows the success callout with folder, dashboard link, and commit link | yes |
+| S-117 | A server error is shown in a warning callout and the form stays usable | yes |
+| S-118 | Without `upload_url` the GitHub flow is unchanged | yes |
+
+## The upload worker (run in Chromium against a fake GitHub)
+
+| id | path | covered |
+|---|---|---|
+| W-01 | OPTIONS preflight returns 204 with CORS headers for the allowed origin | yes |
+| W-02 | GET is rejected with 405 | yes |
+| W-03 | A wrong passcode is rejected with 403 before any GitHub call | yes |
+| W-04 | A member id not in members.json is rejected after reading the roster | yes |
+| W-05 | Missing files, blank title or assignment, or a malformed member id are rejected | yes |
+| W-06 | Happy path: roster, folder check, one blob per file plus submission.md, tree on the base tree, commit authored as the member, ref update; response carries folder, files, commit | yes |
+| W-07 | An existing folder for the same title today gets a -2 suffix | yes |
+| W-08 | A file over 25 MB is rejected with 413 before any GitHub call | yes |
+| W-09 | Path-traversal names are reduced to the base name; duplicate names and submission.md are deduplicated | yes |
+| W-10 | A foreign Origin does not get echoed in CORS; localhost is allowed for local development | yes |
+| W-11 | A non-fast-forward ref update is retried on the new head | yes |
+| W-12 | A missing worker setting is reported clearly | yes |
+

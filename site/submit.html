@@ -34,12 +34,14 @@
         <div class="field"><label for="s-title">Title</label><input id="s-title" placeholder="What is this? For example: Literature review, first pass"><span class="help">Short and specific. It becomes the folder name.</span></div>
         <div class="field"><label for="s-notes">One-line note (optional)</label><input id="s-notes" placeholder="Anything the reviewer should know up front"></div>
         <div class="field"><label for="s-body">Description (optional)</label><textarea id="s-body" placeholder="What you did, what is still open, what you want feedback on."></textarea></div>
-        <div class="field"><label for="s-files">Files</label><input id="s-files" type="file" multiple><span class="help">Anything: .md, .csv, .xlsx, .pdf, .ipynb, images. Keep single files under 100 MB (GitHub's limit).</span><ul class="filelist" id="s-filelist"></ul></div>
+        <div class="field"><label for="s-files">Files</label><input id="s-files" type="file" multiple><span class="help">Anything: .md, .csv, .xlsx, .pdf, .ipynb, images. Up to 25 MB per file.</span><ul class="filelist" id="s-filelist"></ul></div>
+        ${data.uploadUrl ? `<div class="field"><label for="s-passcode">Group passcode</label><input id="s-passcode" type="password" autocomplete="off" placeholder="The passcode the admins gave the group"><span class="help">Keeps strangers from uploading to a public site. Ask Charlie or Prof. Crain if you do not have it.</span></div>` : ""}
         <div class="btn-row">
-          <button class="btn primary" id="s-go">Upload on GitHub</button>
+          <button class="btn primary" id="s-go">${data.uploadUrl ? "Upload" : "Upload on GitHub"}</button>
           <a class="btn" id="s-download" download="submission.md">Download submission.md</a>
           <span class="small muted" id="s-hint"></span>
         </div>
+        <div id="s-result" class="section" hidden></div>
       </div>
 
       <div>
@@ -50,6 +52,7 @@
           <pre id="s-preview"></pre>
         </div>
         <div class="card">
+          ${data.uploadUrl ? `<div class="card-head"><h2>Other ways to submit</h2><span class="small muted">Only if the upload button is not working for you.</span></div>` : ""}
           <div class="tabs"><button class="active" data-tab="web">On GitHub</button><button data-tab="git">Terminal</button><button data-tab="script">Helper script</button></div>
           <div data-panel="web">
             <ol class="steps">
@@ -110,12 +113,41 @@
   }
   render();
 
-  $("s-go").addEventListener("click", () => {
+  $("s-go").addEventListener("click", async () => {
     const b = build();
     if (!$("s-assignment").value.trim()) { $("s-assignment").focus(); $("s-hint").textContent = "Which assignment is this for?"; return; }
     if (!$("s-title").value.trim()) { $("s-title").focus(); $("s-hint").textContent = "Give it a title first."; return; }
-    if (!data.github) return;
-    window.open(`${data.github}/upload/${data.branch}/${b.path}`, "_blank", "noopener");
+    if (!data.uploadUrl) {
+      if (data.github) window.open(`${data.github}/upload/${data.branch}/${b.path}`, "_blank", "noopener");
+      return;
+    }
+    // Upload straight from the site: the worker writes the files into the repo.
+    if (!files.length) { $("s-files").focus(); $("s-hint").textContent = "Attach at least one file."; return; }
+    const big = files.find((f) => f.size > 25 * 1024 * 1024);
+    if (big) { $("s-hint").textContent = `${big.name} is over 25 MB.`; return; }
+    if (!$("s-passcode").value) { $("s-passcode").focus(); $("s-hint").textContent = "Enter the group passcode."; return; }
+    const form = new FormData();
+    form.append("member", me.id);
+    form.append("passcode", $("s-passcode").value);
+    form.append("assignment", b.assignment);
+    form.append("title", b.title);
+    form.append("notes", b.notes);
+    form.append("body", b.body);
+    files.forEach((f) => form.append("files", f, f.name));
+    const btn = $("s-go"), result = $("s-result");
+    btn.disabled = true; btn.textContent = "Uploading..."; $("s-hint").textContent = "";
+    result.hidden = false; result.innerHTML = `<p class="muted">Sending ${files.length} file${files.length === 1 ? "" : "s"} (${T.fmtSize(files.reduce((n, f) => n + f.size, 0))})...</p>`;
+    try {
+      const res = await fetch(data.uploadUrl, { method: "POST", body: form });
+      let out = {};
+      try { out = await res.json(); } catch (e) { out = { error: `Unexpected reply (${res.status})` }; }
+      if (!res.ok || !out.ok) throw new Error(out.error || `Upload failed (${res.status})`);
+      result.innerHTML = `<div class="callout"><b>Uploaded.</b> Your work is in the repo at <code>${T.esc(out.folder)}</code> with ${out.files.length} file${out.files.length === 1 ? "" : "s"}. It shows up on the <a href="${T.withViewer("index.html", data)}">dashboard</a> in about a minute, once the site rebuilds.${out.commit_url ? ` <a class="small" href="${T.esc(out.commit_url)}" target="_blank" rel="noopener">View the commit</a>` : ""}</div>`;
+      btn.textContent = "Uploaded";
+    } catch (e) {
+      result.innerHTML = `<div class="callout warn"><b>Not uploaded.</b> ${T.esc(e.message)}</div>`;
+      btn.disabled = false; btn.textContent = "Upload";
+    }
   });
   $("s-copy-git").addEventListener("click", (e) => T.copyText(build().git, e.target));
   $("s-copy-script").addEventListener("click", (e) => T.copyText(build().script, e.target));

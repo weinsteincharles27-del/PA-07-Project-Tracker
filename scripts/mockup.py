@@ -11,6 +11,7 @@ site/ or submissions/ is touched.
 import argparse
 import functools
 import http.server
+import json
 import os
 import shutil
 import socket
@@ -64,6 +65,13 @@ def main():
     root = os.path.join(tmp, "site")
     shutil.copytree(SITE, root)
     shutil.copy(os.path.join(SITE, "data", "sample-index.json"), os.path.join(root, "data", "index.json"))
+    # Show the Submit page the way members see it once the upload service is set up.
+    idx_path = os.path.join(root, "data", "index.json")
+    with open(idx_path, encoding="utf-8") as f:
+        idx = json.load(f)
+    idx["upload_url"] = idx.get("upload_url") or "https://pa07-upload.example.workers.dev/"
+    with open(idx_path, "w", encoding="utf-8") as f:
+        json.dump(idx, f)
     # The sample files, so the viewer has something to show.
     if os.path.isdir(os.path.join(root, "submissions")):
         shutil.rmtree(os.path.join(root, "submissions"))
@@ -95,6 +103,7 @@ def main():
             {"name": "turnout.csv", "mimeType": "text/csv", "buffer": b"district,year,turnout\nPA-07,2020,0.71\n"},
             {"name": "codebook.md", "mimeType": "text/markdown", "buffer": b"# Codebook\n"},
         ])
+        page.fill("#s-passcode", "the-group-passcode")
         page.screenshot(path=os.path.join(OUT, "08-submit-filled.png"), full_page=True)
         print(f"{'08-submit-filled.png':28s} The submit form filled in, showing what gets created")
         # The pop-up viewer: an admin opens a PDF straight from the dashboard.

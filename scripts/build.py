@@ -192,6 +192,7 @@ def build(root):
         "group": members.get("group", "Group"),
         "repo": members.get("repo", ""),
         "branch": members.get("branch", "main"),
+        "upload_url": members.get("upload_url", ""),
         "members": members["members"],
         "statuses": list(STATUSES),
         "submissions": submissions,
