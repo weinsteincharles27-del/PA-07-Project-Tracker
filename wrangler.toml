@@ -1,0 +1,16 @@
+# Cloudflare Worker config. The worker is connected to this repo on
+# Cloudflare, so every push to main redeploys it with this file.
+#
+# worker/upload.js answers POST /upload (the Submit page's Upload button)
+# and sends any other request to the published site. Secrets
+# (GITHUB_TOKEN, GROUP_PASSCODE) live in the worker's dashboard settings,
+# not here.
+name = "pa-07-project-tracker"
+main = "worker/upload.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+GITHUB_REPO = "weinsteincharles27-del/PA-07-Project-Tracker"
+GITHUB_BRANCH = "main"
+ALLOWED_ORIGIN = "https://weinsteincharles27-del.github.io"
+SITE_URL = "https://weinsteincharles27-del.github.io/PA-07-Project-Tracker/"

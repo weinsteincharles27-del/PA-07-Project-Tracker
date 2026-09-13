@@ -1755,3 +1755,40 @@ class TestUploadWorker(ServedSiteTestCase):
         self.assertEqual(r["status"], 500)
         self.assertIn("GITHUB_TOKEN", r["body"]["error"])
 
+    # -- routing (W-13 .. W-15) ------------------------------------------
+    ROUTE_HARNESS = r"""
+    async ({ url, method }) => {
+      const mod = await import("/worker/upload.js");
+      const env = { GITHUB_TOKEN: "t", GITHUB_REPO: "o/r", GROUP_PASSCODE: "p", ALLOWED_ORIGIN: "https://site.test", SITE_URL: "https://site.test/tracker/" };
+      const req = new Request(url, { method });
+      const res = await mod.route(req, env, async () => new Response("{}", { status: 500 }));
+      let body = null; try { body = await res.json(); } catch (e) {}
+      return { status: res.status, location: res.headers.get("location"), body };
+    }
+    """
+
+    def run_route(self, url, method):
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        return page.evaluate(self.ROUTE_HARNESS, {"url": url, "method": method})
+
+    def test_W13_get_on_the_worker_redirects_to_the_site(self):
+        r = self.run_route("https://worker.test/", "GET")
+        self.assertEqual(r["status"], 302)
+        self.assertEqual(r["location"], "https://site.test/tracker/")
+        r2 = self.run_route("https://worker.test/anything/else", "GET")
+        self.assertEqual(r2["status"], 302)
+
+    def test_W14_post_to_the_wrong_path_is_a_clear_404(self):
+        r = self.run_route("https://worker.test/", "POST")
+        self.assertEqual(r["status"], 404)
+        self.assertIn("/upload", r["body"]["error"])
+
+    def test_W15_upload_path_reaches_the_handler(self):
+        r = self.run_route("https://worker.test/upload/", "POST")
+        # No form body, so the handler answers 400 rather than the router's 404.
+        self.assertEqual(r["status"], 400)
+        self.assertIn("multipart", r["body"]["error"])
+        r2 = self.run_route("https://worker.test/upload", "OPTIONS")
+        self.assertEqual(r2["status"], 204)
+

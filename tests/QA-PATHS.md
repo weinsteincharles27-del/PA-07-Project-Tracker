@@ -201,4 +201,7 @@ out in that review.
 | W-10 | A foreign Origin does not get echoed in CORS; localhost is allowed for local development | yes |
 | W-11 | A non-fast-forward ref update is retried on the new head | yes |
 | W-12 | A missing worker setting is reported clearly | yes |
+| W-13 | GET on the worker (any path but /upload) redirects to the published site | yes |
+| W-14 | POST to a path other than /upload is a clear 404 naming the endpoint | yes |
+| W-15 | POST and OPTIONS on /upload reach the handler (trailing slash tolerated) | yes |
 

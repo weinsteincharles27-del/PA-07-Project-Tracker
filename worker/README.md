@@ -22,34 +22,38 @@ tools to install. About ten minutes.
 
 ## 2. The worker
 
-1. Sign up or log in at <https://dash.cloudflare.com> (free plan).
-2. **Workers & Pages**, **Create**, **Create Worker**. Give it a name such as
-   `pa07-upload` and press **Deploy** (it deploys a hello-world first).
-3. **Edit code**. Replace everything in the editor with the contents of
-   [`upload.js`](upload.js), then **Deploy**.
-4. Back on the worker's page, **Settings**, **Variables and Secrets**. Add:
+The worker is connected to this repo on Cloudflare (Workers & Pages, the
+`pa-07-project-tracker` worker, Settings, Build). Every push to `main`
+redeploys it. `wrangler.toml` in the repo root tells Cloudflare what to run:
+`worker/upload.js`, with the plain settings (repo, branch, allowed origin,
+site URL) as variables.
 
-   | name | type | value |
-   |---|---|---|
-   | `GITHUB_TOKEN` | Secret | the token from step 1 |
-   | `GITHUB_REPO` | Text | `weinsteincharles27-del/PA-07-Project-Tracker` |
-   | `GROUP_PASSCODE` | Secret | a passcode you will give the group |
-   | `ALLOWED_ORIGIN` | Text | `https://weinsteincharles27-del.github.io` |
+The two secrets are set once in the dashboard and survive redeploys: on the
+worker's page, **Settings**, **Variables and Secrets**, add
 
-   Save after each one (the worker redeploys itself).
-5. Copy the worker's URL from its overview page. It looks like
-   `https://pa07-upload.<your-account>.workers.dev`.
+| name | type | value |
+|---|---|---|
+| `GITHUB_TOKEN` | Secret | the token from step 1 |
+| `GROUP_PASSCODE` | Secret | a passcode you will give the group |
+
+The endpoint is `https://pa-07-project-tracker.weinsteincharles27.workers.dev/upload`.
+Opening the worker's address in a browser just redirects to the site.
+
+If you ever set it up from scratch without the git connection: Workers &
+Pages, Create Worker, Edit code, paste `upload.js`, Deploy, then add all of
+`GITHUB_TOKEN`, `GITHUB_REPO`, `GROUP_PASSCODE`, `ALLOWED_ORIGIN`, `SITE_URL`
+under Variables and Secrets.
 
 ## 3. Point the site at it
 
-Put that URL into `members.json`:
+`members.json` carries the endpoint:
 
 ```json
-"upload_url": "https://pa07-upload.<your-account>.workers.dev",
+"upload_url": "https://pa-07-project-tracker.weinsteincharles27.workers.dev/upload",
 ```
 
-Commit and push. Once the site rebuilds, the Submit page shows a passcode
-field and an **Upload** button, and members never see GitHub.
+Once the site rebuilds, the Submit page shows a passcode field and an
+**Upload** button, and members never see GitHub.
 
 ## Checking it works
 
