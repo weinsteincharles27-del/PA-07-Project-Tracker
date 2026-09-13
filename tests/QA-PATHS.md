@@ -157,3 +157,14 @@ out in that review.
 | S-82 | Verifying "Copy as markdown" / "Copy commands" actually reach the OS clipboard | Headless Chromium's clipboard permission model is unreliable in a sandboxed test run; tests instead assert the equivalent preview/`textContent` the copy button uses, which exercises the same code path. |
 | S-83 | Cross-browser rendering (Firefox, WebKit) | Only Chromium is installed for this Python's Playwright in this environment; all tests run on Chromium only. |
 | S-84 | Real screen-reader / accessibility tree audit | Out of scope for this pass; the timeline SVG has `role="img"` and an `aria-label`, but no full a11y audit was done. |
+
+## File viewer
+
+| id | path | covered |
+|---|---|---|
+| S-107 | Clicking a PDF button on the dashboard opens the viewer (iframe on the file, name, open and download links) without following the row link | yes |
+| S-108 | Escape and the Close button hide the viewer and drop the iframe | yes |
+| S-109 | A non-PDF file is a plain new-tab link, and the file is served next to the site | yes |
+| S-110 | File buttons on the submission page open the viewer | yes |
+| S-111 | A member can open their own PDF | yes |
+

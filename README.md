@@ -17,6 +17,8 @@ Mockups of every page are in [`mockups/`](mockups/), rendered with sample data:
 | Admin dashboard: everyone's work, coverage by assignment | Timeline: one lane per person, with revisions |
 | ![Review thread](mockups/05-submission-review.png) | ![Submit](mockups/08-submit-filled.png) |
 | A submission with its review thread | The submit form and what it creates |
+| ![File viewer](mockups/09-file-viewer.png) | |
+| A PDF opened from the dashboard | |
 
 ## How submitting works
 
@@ -95,13 +97,24 @@ Anyone can add a comment; only admins change the status. The submission page
 on the site drafts this file for you and opens GitHub's editor with it filled
 in, so a review is one click plus a commit.
 
+## Viewing submitted files
+
+Every file in a submission folder is stored in the repo (as a git blob, like
+everything else) and published with the site. On the dashboard and on each
+submission page, the files show as buttons: PDFs and images open in a pop-up
+viewer right there, with "Open in new tab" and "Download" alongside; other
+file types open in a new tab. Members see the buttons on their own work,
+admins on everyone's.
+
 ## Running the site
 
 The site is plain HTML and reads `site/data/index.json`, which
-`scripts/build.py` generates from the repo. No dependencies beyond Python 3.
+`scripts/build.py` generates from the repo. `--sync-files` also copies
+`submissions/` into `site/` so the files are served (that copy is
+gitignored). No dependencies beyond Python 3.
 
 ```bash
-python3 scripts/build.py
+python3 scripts/build.py --sync-files
 python3 -m http.server 8000 -d site
 ```
 

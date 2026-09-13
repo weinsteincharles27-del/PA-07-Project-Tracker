@@ -92,6 +92,65 @@ window.Tracker = (function () {
   function assignmentChip(data, name) { return `<span class="chip assignment">${esc(name || "no assignment")}</span>`; }
   function detailHref(data, sub) { return withViewer(`submission.html?id=${encodeURIComponent(sub.id)}`, data); }
 
+  // Submitted files. They are served next to the site (build.py --sync-files
+  // mirrors submissions/ into site/), so a file's repo path is also its URL.
+  const IMAGE_EXT = new Set(["png", "jpg", "jpeg", "gif", "webp", "svg"]);
+  function fileKind(name) {
+    const ext = (name.split(".").pop() || "").toLowerCase();
+    return ext === "pdf" ? "pdf" : IMAGE_EXT.has(ext) ? "image" : "other";
+  }
+  function fileUrl(f) { return f.path.split("/").map(encodeURIComponent).join("/"); }
+  function fileLinks(files) {
+    return (files || []).map((f) => fileKind(f.name) === "other"
+      ? `<a class="filebtn" href="${fileUrl(f)}" target="_blank" rel="noopener" title="${esc(f.name)}, opens in a new tab">${esc(f.name)}</a>`
+      : `<button type="button" class="filebtn ${fileKind(f.name)}" data-path="${esc(f.path)}" data-name="${esc(f.name)}" title="Open ${esc(f.name)}">${esc(f.name)}</button>`).join(" ");
+  }
+  function fileViewer() {
+    let v = document.getElementById("file-viewer");
+    if (v) return v;
+    v = document.createElement("div");
+    v.id = "file-viewer"; v.className = "file-viewer"; v.hidden = true;
+    v.innerHTML = `
+      <div class="file-viewer-box" role="dialog" aria-modal="true" aria-label="File viewer">
+        <div class="file-viewer-head">
+          <span class="viewer-name mono"></span>
+          <a class="btn small viewer-open" target="_blank" rel="noopener">Open in new tab</a>
+          <a class="btn small viewer-dl">Download</a>
+          <button type="button" class="btn small viewer-close" aria-label="Close">Close</button>
+        </div>
+        <div class="file-viewer-body"></div>
+      </div>`;
+    document.body.appendChild(v);
+    v.addEventListener("click", (e) => { if (e.target === v) closeViewer(); });
+    v.querySelector(".viewer-close").addEventListener("click", closeViewer);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !v.hidden) closeViewer(); });
+    return v;
+  }
+  function openFile(f) {
+    const v = fileViewer(), url = fileUrl(f), kind = fileKind(f.name);
+    v.querySelector(".viewer-name").textContent = f.name;
+    v.querySelector(".viewer-open").href = url;
+    const dl = v.querySelector(".viewer-dl"); dl.href = url; dl.download = f.name;
+    v.querySelector(".file-viewer-body").innerHTML = kind === "image"
+      ? `<img src="${url}" alt="${esc(f.name)}">`
+      : `<iframe src="${url}" title="${esc(f.name)}"></iframe>`;
+    v.hidden = false;
+    document.body.classList.add("file-viewer-open");
+  }
+  function closeViewer() {
+    const v = document.getElementById("file-viewer");
+    if (!v) return;
+    v.hidden = true;
+    v.querySelector(".file-viewer-body").innerHTML = "";
+    document.body.classList.remove("file-viewer-open");
+  }
+  function wireFileButtons(root) {
+    root.querySelectorAll("button.filebtn").forEach((b) => b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openFile({ path: b.dataset.path, name: b.dataset.name });
+    }));
+  }
+
   function submissionTable(data, subs, opts) {
     opts = opts || {};
     const rows = subs.map((s) => `
@@ -99,22 +158,24 @@ window.Tracker = (function () {
         ${opts.showPerson ? `<td>${esc(data.memberById[s.member]?.name || s.member)}</td>` : ""}
         <td class="title"><a href="${detailHref(data, s)}">${esc(s.title)}</a><div class="small muted">${esc(s.notes || "")}</div></td>
         <td>${assignmentChip(data, s.assignment)}</td>
+        <td class="files-cell">${fileLinks(s.files) || '<span class="muted">none</span>'}</td>
         <td class="date">${fmtDate(s.submitted)}</td>
         <td class="date">${s.updated !== s.submitted ? fmtDate(s.updated) : '<span class="muted">same</span>'}</td>
         <td>${chip(s.status)}</td>
         <td class="ink2">${esc(s.review?.reviewer || "")}</td>
       </tr>`);
-    const empty = `<tr class="empty"><td colspan="${opts.showPerson ? 7 : 6}">${esc(opts.emptyText || "No submissions yet.")}</td></tr>`;
+    const empty = `<tr class="empty"><td colspan="${opts.showPerson ? 8 : 7}">${esc(opts.emptyText || "No submissions yet.")}</td></tr>`;
     return `<table class="list">
-      <thead><tr>${opts.showPerson ? "<th>Person</th>" : ""}<th>Submission</th><th>Assignment</th><th>Submitted</th><th>Updated</th><th>Status</th><th>Reviewer</th></tr></thead>
+      <thead><tr>${opts.showPerson ? "<th>Person</th>" : ""}<th>Submission</th><th>Assignment</th><th>Files</th><th>Submitted</th><th>Updated</th><th>Status</th><th>Reviewer</th></tr></thead>
       <tbody>${rows.length ? rows.join("") : empty}</tbody></table>`;
   }
 
   function wireRowLinks(root) {
     root.querySelectorAll("tr[data-href]").forEach((tr) => tr.addEventListener("click", (e) => {
-      if (e.target.closest("a")) return;
+      if (e.target.closest("a, button")) return;
       location.href = tr.dataset.href;
     }));
+    wireFileButtons(root);
   }
 
   function copyText(text, btn) {
@@ -130,5 +191,6 @@ window.Tracker = (function () {
   }
 
   return { STATUS, ORDER, statusOf, esc, today, parseDate, fmtDate, fmtDateLong, daysBetween, fmtSize, slug, initials,
-           load, withViewer, chip, personChip, assignmentChip, detailHref, submissionTable, wireRowLinks, copyText, fail };
+           load, withViewer, chip, personChip, assignmentChip, detailHref, submissionTable, wireRowLinks, copyText, fail,
+           fileKind, fileUrl, fileLinks, openFile, closeViewer, wireFileButtons };
 })();

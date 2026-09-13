@@ -64,12 +64,17 @@ def main():
     root = os.path.join(tmp, "site")
     shutil.copytree(SITE, root)
     shutil.copy(os.path.join(SITE, "data", "sample-index.json"), os.path.join(root, "data", "index.json"))
+    # The sample files, so the viewer has something to show.
+    if os.path.isdir(os.path.join(root, "submissions")):
+        shutil.rmtree(os.path.join(root, "submissions"))
+    shutil.copytree(os.path.join(REPO, "fixtures", "submissions"), os.path.join(root, "submissions"))
     httpd, port = serve(root)
     base = f"http://127.0.0.1:{port}/"
     os.makedirs(OUT, exist_ok=True)
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        # Full Chromium rather than the headless shell, so PDFs render in the viewer shot.
+        browser = p.chromium.launch(channel="chromium")
         ctx = browser.new_context(viewport={"width": args.width, "height": 900}, device_scale_factor=2, color_scheme="light")
         page = ctx.new_page()
         errors = []
@@ -92,6 +97,13 @@ def main():
         ])
         page.screenshot(path=os.path.join(OUT, "08-submit-filled.png"), full_page=True)
         print(f"{'08-submit-filled.png':28s} The submit form filled in, showing what gets created")
+        # The pop-up viewer: an admin opens a PDF straight from the dashboard.
+        page.goto(base + "index.html?as=prof-crain", wait_until="networkidle")
+        page.click("button.filebtn.pdf >> nth=0")
+        page.wait_for_selector("#file-viewer:not([hidden]) iframe")
+        page.wait_for_timeout(800)
+        page.screenshot(path=os.path.join(OUT, "09-file-viewer.png"))
+        print(f"{'09-file-viewer.png':28s} A PDF opened in the viewer from the dashboard")
         browser.close()
         if errors:
             print("\nBrowser errors:\n  " + "\n  ".join(errors), file=sys.stderr)

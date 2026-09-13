@@ -9,6 +9,9 @@ Usage:
 Every submission is a folder:  submissions/<member>/<folder>/submission.md
 Every review is a file:        reviews/<member>/<folder>.md
 
+With --sync-files, submissions/ is also copied into site/submissions/ so the
+published site can serve the files themselves (the copy is gitignored).
+
 Dates come from git (first commit that added the folder = submitted,
 last commit that touched it = updated). A `submitted:` or `updated:` line
 in the front matter overrides git, which is how the fixtures carry dates.
@@ -19,6 +22,7 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -183,14 +187,33 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", default=REPO, help="folder holding submissions/ and reviews/ (default: repo root)")
     ap.add_argument("--out", default=os.path.join(REPO, "site", "data", "index.json"))
+    ap.add_argument("--sync-files", action="store_true",
+                    help="copy <root>/submissions into the site folder next to --out so the files are served")
     args = ap.parse_args()
-    data = build(os.path.abspath(args.root))
+    root = os.path.abspath(args.root)
+    data = build(root)
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write("\n")
     n = len(data["submissions"])
     print(f"wrote {os.path.relpath(args.out, REPO)}: {n} submission{'s' if n != 1 else ''}")
+    if args.sync_files:
+        site = os.path.dirname(os.path.dirname(os.path.abspath(args.out)))
+        dest = sync_files(root, site)
+        print(f"synced submissions/ into {os.path.relpath(dest, REPO)}")
+
+
+def sync_files(root, site):
+    """Mirror <root>/submissions into <site>/submissions (a fresh copy each time)."""
+    src, dest = os.path.join(root, "submissions"), os.path.join(site, "submissions")
+    if os.path.isdir(dest):
+        shutil.rmtree(dest)
+    if os.path.isdir(src):
+        shutil.copytree(src, dest, ignore=shutil.ignore_patterns(".*"))
+    else:
+        os.makedirs(dest)
+    return dest
 
 
 if __name__ == "__main__":
