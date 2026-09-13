@@ -55,6 +55,8 @@ Three ways to get it into the repo. Pick whichever you are comfortable with.
 
 To revise a submission, change the files in the same folder and commit again.
 The tracker shows both the original date and the latest revision date.
+Renaming a submission folder resets its dates and detaches its review, since
+the folder name is how the tracker identifies it, so revise in place instead.
 
 Your member id is your first name in lowercase (`bryan`, `aanika`, `kiley`,
 `kayla`, `bode`, `max`, `charlie`) or `prof-crain`. The full list is in

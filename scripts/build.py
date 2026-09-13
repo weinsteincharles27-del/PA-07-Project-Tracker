@@ -139,8 +139,11 @@ def build(root):
                 source = "filesystem"
             if meta.get("submitted"):
                 # Front matter overrides both dates (the fixtures rely on this).
+                # The git author goes with the git dates, so drop it too and
+                # let submitted_by fall back to the member's name.
                 submitted, source = meta["submitted"], "front-matter"
                 updated = meta.get("updated", submitted)
+                author = None
             elif meta.get("updated"):
                 updated = meta["updated"]
             updated = updated or submitted

@@ -38,22 +38,33 @@ def main():
     args = ap.parse_args()
 
     name = next(m["name"] for m in members if m["id"] == args.member)
+    # Check every input before touching the repo, so a typo cannot leave a
+    # half-created folder behind.
+    missing = [src for src in args.files if not os.path.isfile(src)]
+    if missing:
+        sys.exit("not a file: " + ", ".join(missing) + "\nnothing was created")
     folder = f"{dt.date.today().isoformat()}-{slug(args.title)}"
     path = os.path.join(REPO, "submissions", args.member, folder)
     if os.path.exists(path):
         sys.exit(f"{os.path.relpath(path, REPO)} already exists; pick a different title")
+    member_dir = os.path.dirname(path)
+    new_member_dir = not os.path.isdir(member_dir)
     os.makedirs(path)
-    with open(os.path.join(path, "submission.md"), "w", encoding="utf-8") as f:
-        f.write(f"---\ntitle: {args.title}\nassignment: {args.assignment}\n")
-        if args.notes:
-            f.write(f"notes: {args.notes}\n")
-        f.write("---\n")
-        if args.body:
-            f.write(args.body.strip() + "\n")
-    for src in args.files:
-        if not os.path.isfile(src):
-            sys.exit(f"not a file: {src}")
-        shutil.copy2(src, os.path.join(path, os.path.basename(src)))
+    try:
+        with open(os.path.join(path, "submission.md"), "w", encoding="utf-8") as f:
+            f.write(f"---\ntitle: {args.title}\nassignment: {args.assignment}\n")
+            if args.notes:
+                f.write(f"notes: {args.notes}\n")
+            f.write("---\n")
+            if args.body:
+                f.write(args.body.strip() + "\n")
+        for src in args.files:
+            shutil.copy2(src, os.path.join(path, os.path.basename(src)))
+    except BaseException:
+        # Anything that fails mid-write (disk error, Ctrl-C) removes what was
+        # started, including a member folder that did not exist before.
+        shutil.rmtree(member_dir if new_member_dir else path, ignore_errors=True)
+        raise
     rel = os.path.relpath(path, REPO)
     print(f"created {rel}/ with submission.md and {len(args.files)} file(s)")
     if args.no_commit:
