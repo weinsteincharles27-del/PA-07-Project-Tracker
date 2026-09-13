@@ -45,12 +45,19 @@ The assignment is whatever you were asked to do, typed as a name. Type it
 the same way each time (the Submit page suggests names already in use), since
 the admins' coverage grid groups work by that exact name.
 
-Three ways to get it into the repo. Pick whichever you are comfortable with.
+Members submit from the website. Open the Submit page, pick your name, fill
+in the assignment and title, attach your files, type the group passcode, and
+press **Upload**. The files are written into this repo as git blobs (one
+commit per submission, in your name) and the dashboard shows them about a
+minute later. No GitHub account needed. The small service behind the Upload
+button is in [`worker/`](worker/), with a ten-minute setup guide.
 
-1. **On GitHub, no git needed.** Open the site's Submit page, fill in the
-   form, download the generated `submission.md`, then press *Upload on
-   GitHub*. It opens GitHub's upload page pointed at your folder; drop in
-   `submission.md` and your files and commit.
+Three fallbacks exist for anyone who prefers them, or if the upload service
+is not set up yet:
+
+1. **On GitHub.** Download the generated `submission.md` from the Submit page,
+   then use GitHub's upload page (the Submit page links straight to your
+   folder); drop in `submission.md` and your files and commit.
 2. **Terminal.** Make the folder, save `submission.md` and your files in it,
    then `git add`, `git commit`, `git push`. The Submit page prints the exact
    commands.
@@ -153,7 +160,8 @@ so nobody rewrites history.
 ## Layout
 
 ```
-members.json          roster, roles, and the GitHub repo the site links to
+members.json          roster, roles, the GitHub repo, and the upload service URL
+worker/upload.js      the upload service (Cloudflare Worker) and its setup guide
 submissions/<id>/     one folder per submission (members write here)
 reviews/<id>/         one markdown file per submission (admins write here)
 site/                 the static site; data/index.json is generated

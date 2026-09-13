@@ -96,6 +96,7 @@ class ServedSiteTestCase(unittest.TestCase):
         if os.path.isdir(files_dir):
             shutil.rmtree(files_dir)
         shutil.copytree(os.path.join(REPO, "fixtures", "submissions"), files_dir)
+        shutil.copytree(os.path.join(REPO, "worker"), os.path.join(cls.root, "worker"))
         cls.playwright = sync_playwright().start()
         cls.browser = cls.playwright.chromium.launch()
         cls.httpd, cls.port = serve(cls.root)
@@ -1476,4 +1477,281 @@ class TestBareFolders(ServedSiteTestCase):
         self.assertIn("Web upload", page2.locator("#table").inner_text())
         self.assert_clean(page, "bare folder admin")
         self.assert_clean(page2, "bare folder dashboard")
+
+
+# ======================================================================
+# Uploading from the site (S-114 .. S-118)
+# ======================================================================
+UPLOAD_URL = "https://upload.example.test/"
+
+
+def with_upload(base):
+    data = clone(base)
+    data["upload_url"] = UPLOAD_URL
+    return data
+
+
+def parse_multipart(body, content_type):
+    """Minimal multipart/form-data parser: returns {name: value-or-(filename, bytes)}."""
+    import re as _re
+    boundary = _re.search(r'boundary=("?)([^";]+)\1', content_type).group(2).encode()
+    out = {}
+    for part in body.split(b"--" + boundary)[1:]:
+        if part.strip() in (b"", b"--"):
+            continue
+        head, _, content = part.partition(b"\r\n\r\n")
+        content = content[:-2] if content.endswith(b"\r\n") else content
+        name = _re.search(rb'name="([^"]*)"', head).group(1).decode()
+        fn = _re.search(rb'filename="([^"]*)"', head)
+        if fn:
+            out.setdefault(name, []).append((fn.group(1).decode(), content))
+        else:
+            out[name] = content.decode()
+    return out
+
+
+class TestSiteUpload(ServedSiteTestCase):
+    def _fill(self, page, with_file=True, passcode="secret"):
+        page.fill("#s-assignment", "Data memo")
+        page.fill("#s-title", "Sources and cadence")
+        page.fill("#s-notes", "First pass")
+        if with_file:
+            page.set_input_files("#s-files", [{"name": "memo.pdf", "mimeType": "application/pdf", "buffer": b"%PDF-1.4 fake"}])
+        if passcode is not None:
+            page.fill("#s-passcode", passcode)
+
+    def test_S114_upload_mode_shows_passcode_and_upload_button(self):
+        self.write_data(with_upload(SAMPLE))
+        page = self.new_page()
+        self.goto(page, "submit.html?as=bryan")
+        self.assertEqual(page.locator("#s-passcode").count(), 1)
+        self.assertEqual(page.locator("#s-go").inner_text().strip(), "Upload")
+        self.assertIn("Other ways to submit", page.locator("#page").inner_text())
+        self.assert_clean(page, "upload mode form")
+
+    def test_S115_client_side_checks_block_the_post(self):
+        self.write_data(with_upload(SAMPLE))
+        page = self.new_page()
+        requests = []
+        page.context.route(UPLOAD_URL + "**", lambda route: (requests.append(route.request), route.fulfill(status=200, body="{}")))
+        self.goto(page, "submit.html?as=bryan")
+        self._fill(page, with_file=False, passcode=None)
+        page.click("#s-go")
+        self.assertIn("Attach at least one file", page.locator("#s-hint").inner_text())
+        self._fill(page, with_file=True, passcode=None)
+        page.click("#s-go")
+        self.assertIn("passcode", page.locator("#s-hint").inner_text())
+        self.assertEqual(requests, [], "nothing should be posted until the form is complete")
+        self.assert_clean(page, "client checks")
+
+    def test_S116_posts_multipart_form_and_shows_success(self):
+        self.write_data(with_upload(SAMPLE))
+        page = self.new_page()
+        captured = {}
+
+        def fulfil(route):
+            captured["headers"] = route.request.headers
+            captured["body"] = route.request.post_data_buffer
+            route.fulfill(status=200, content_type="application/json",
+                          body=json.dumps({"ok": True, "folder": "submissions/bryan/2026-09-13-sources-and-cadence", "files": ["memo.pdf"],
+                                           "commit": "abc123", "commit_url": "https://github.com/x/y/commit/abc123"}))
+        page.context.route(UPLOAD_URL + "**", fulfil)
+        self.goto(page, "submit.html?as=bryan")
+        self._fill(page)
+        page.click("#s-go")
+        page.wait_for_selector("#s-result .callout:not(.warn)")
+        form = parse_multipart(captured["body"], captured["headers"]["content-type"])
+        self.assertEqual(form["member"], "bryan")
+        self.assertEqual(form["passcode"], "secret")
+        self.assertEqual(form["assignment"], "Data memo")
+        self.assertEqual(form["title"], "Sources and cadence")
+        self.assertEqual(form["notes"], "First pass")
+        self.assertEqual(form["files"], [("memo.pdf", b"%PDF-1.4 fake")])
+        text = page.locator("#s-result").inner_text()
+        self.assertIn("Uploaded", text)
+        self.assertIn("submissions/bryan/2026-09-13-sources-and-cadence", text)
+        self.assertIn("dashboard", text)
+        self.assertTrue(page.locator("#s-go").is_disabled())
+        self.assertEqual(page.locator("#s-result a[href*='commit/abc123']").count(), 1)
+        self.assert_clean(page, "successful upload")
+
+    def test_S117_server_error_is_shown_and_form_stays_usable(self):
+        self.write_data(with_upload(SAMPLE))
+        page = self.new_page()
+        page.context.route(UPLOAD_URL + "**", lambda route: route.fulfill(status=403, content_type="application/json", body=json.dumps({"error": "That passcode is not right"})))
+        self.goto(page, "submit.html?as=bryan")
+        self._fill(page, passcode="wrong")
+        page.click("#s-go")
+        page.wait_for_selector("#s-result .callout.warn")
+        self.assertIn("That passcode is not right", page.locator("#s-result").inner_text())
+        self.assertFalse(page.locator("#s-go").is_disabled())
+        self.assertEqual(page.locator("#s-go").inner_text().strip(), "Upload")
+        # The browser itself logs a console line for the 403; only page errors matter here.
+        self.assertEqual(page._page_errors, [])
+
+    def test_S118_without_upload_url_the_github_flow_remains(self):
+        self.write_data(SAMPLE)
+        page = self.new_page()
+        self.goto(page, "submit.html?as=bryan")
+        self.assertEqual(page.locator("#s-passcode").count(), 0)
+        self.assertEqual(page.locator("#s-go").inner_text().strip(), "Upload on GitHub")
+        self.assertNotIn("Other ways to submit", page.locator("#page").inner_text())
+        self.assert_clean(page, "github flow")
+
+
+# ======================================================================
+# The upload worker itself (W-01 .. W-11), run in Chromium with a fake fetch
+# ======================================================================
+WORKER_HARNESS = r"""
+async ({ method, fields, files, env, github, origin }) => {
+  const mod = await import("/worker/upload.js");
+  const calls = [];
+  const reply = (obj, status) => new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
+  const fakeFetch = async (url, init) => {
+    const path = url.split("/repos/owner/repo/")[1];
+    calls.push({ path, method: init.method, body: init.body ? JSON.parse(init.body) : null, auth: init.headers.Authorization });
+    const rule = github.find((r) => path.startsWith(r.path) && (!r.method || r.method === init.method) && (r.nth === undefined || r.nth === calls.filter((c) => c.path.startsWith(r.path)).length));
+    if (!rule) return reply({ message: "no fake rule for " + path }, 500);
+    return reply(rule.body, rule.status || 200);
+  };
+  const form = new FormData();
+  for (const [k, v] of Object.entries(fields || {})) form.append(k, v);
+  for (const f of files || []) form.append("files", new File([f.size ? new Uint8Array(f.size) : f.content], f.name));
+  // A plain object standing in for the Request: browsers strip a hand-set
+  // Origin header from real Request objects, and the worker only needs these.
+  const req = { method, headers: new Headers(origin ? { Origin: origin } : {}), formData: async () => form };
+  const res = await mod.handle(req, env, fakeFetch);
+  let body = null;
+  try { body = await res.json(); } catch (e) {}
+  return { status: res.status, body, headers: Object.fromEntries(res.headers.entries()), calls };
+}
+"""
+ROSTER_B64 = None
+
+
+class TestUploadWorker(ServedSiteTestCase):
+    ENV = {"GITHUB_TOKEN": "tok", "GITHUB_REPO": "owner/repo", "GROUP_PASSCODE": "secret", "ALLOWED_ORIGIN": "https://site.test"}
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        import base64
+        roster = {"members": [{"id": "bryan", "name": "Bryan", "role": "member"}, {"id": "prof-crain", "name": "Prof. Crain", "role": "admin"}]}
+        cls.roster_b64 = base64.b64encode(json.dumps(roster).encode()).decode()
+
+    def github_ok(self, **overrides):
+        rules = [
+            {"path": "contents/members.json", "body": {"content": self.roster_b64}},
+            {"path": "contents/submissions/", "status": 404, "body": {"message": "Not Found"}},
+            {"path": "git/blobs", "status": 201, "body": {"sha": "blobsha"}},
+            {"path": "git/ref/heads/main", "body": {"object": {"sha": "headsha"}}},
+            {"path": "git/commits/headsha", "body": {"tree": {"sha": "basetree"}}},
+            {"path": "git/trees", "status": 201, "body": {"sha": "newtree"}},
+            {"path": "git/commits", "method": "POST", "status": 201, "body": {"sha": "newcommit"}},
+            {"path": "git/refs/heads/main", "method": "PATCH", "body": {"object": {"sha": "newcommit"}}},
+        ]
+        return rules
+
+    def run_worker(self, method="POST", fields=None, files=None, env=None, github=None, origin="https://site.test"):
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        base_fields = {"member": "bryan", "passcode": "secret", "assignment": "Memo", "title": "My title", "notes": "n", "body": ""}
+        if fields:
+            base_fields.update(fields)
+        base_files = [{"name": "notes.txt", "content": "hello"}] if files is None else files
+        return page.evaluate(WORKER_HARNESS, {"method": method, "fields": base_fields, "files": base_files,
+                                              "env": env or self.ENV, "github": github or self.github_ok(), "origin": origin})
+
+    def test_W01_options_preflight_returns_cors(self):
+        r = self.run_worker(method="OPTIONS")
+        self.assertEqual(r["status"], 204)
+        self.assertEqual(r["headers"]["access-control-allow-origin"], "https://site.test")
+        self.assertIn("POST", r["headers"]["access-control-allow-methods"])
+
+    def test_W02_get_is_rejected(self):
+        r = self.run_worker(method="GET")
+        self.assertEqual(r["status"], 405)
+
+    def test_W03_wrong_passcode_makes_no_github_calls(self):
+        r = self.run_worker(fields={"passcode": "nope"})
+        self.assertEqual(r["status"], 403)
+        self.assertIn("passcode", r["body"]["error"])
+        self.assertEqual(r["calls"], [])
+
+    def test_W04_unknown_member_is_rejected_after_reading_the_roster(self):
+        r = self.run_worker(fields={"member": "mallory"})
+        self.assertEqual(r["status"], 400)
+        self.assertIn("members.json", r["body"]["error"])
+        self.assertEqual([c["path"].split("?")[0] for c in r["calls"]], ["contents/members.json"])
+
+    def test_W05_missing_fields_and_files_are_rejected(self):
+        self.assertEqual(self.run_worker(files=[])["status"], 400)
+        self.assertEqual(self.run_worker(fields={"title": "  "})["status"], 400)
+        self.assertEqual(self.run_worker(fields={"assignment": ""})["status"], 400)
+        self.assertEqual(self.run_worker(fields={"member": "../x"})["status"], 400)
+
+    def test_W06_happy_path_commits_blobs_tree_commit_and_ref(self):
+        r = self.run_worker(files=[{"name": "notes.txt", "content": "hello"}, {"name": "data.csv", "content": "a,b"}])
+        self.assertEqual(r["status"], 200, r)
+        body = r["body"]
+        self.assertTrue(body["ok"])
+        self.assertTrue(body["folder"].startswith("submissions/bryan/"))
+        self.assertTrue(body["folder"].endswith("-my-title"))
+        self.assertEqual(body["files"], ["notes.txt", "data.csv"])
+        self.assertEqual(body["commit"], "newcommit")
+        self.assertEqual(body["message"], "Bryan: My title (Memo)")
+        paths = [c["path"].split("?")[0] for c in r["calls"]]
+        self.assertEqual(paths[:2], ["contents/members.json", "contents/submissions/bryan/" + body["folder"].split("/")[-1]])
+        self.assertEqual(paths.count("git/blobs"), 3, "submission.md plus two files")
+        self.assertEqual(paths[-5:], ["git/ref/heads/main", "git/commits/headsha", "git/trees", "git/commits", "git/refs/heads/main"])
+        blobs = [c["body"] for c in r["calls"] if c["path"] == "git/blobs"]
+        self.assertEqual(blobs[0]["encoding"], "utf-8")
+        self.assertIn("title: My title\nassignment: Memo\nnotes: n\n", blobs[0]["content"])
+        self.assertEqual(blobs[1]["encoding"], "base64")
+        tree = next(c["body"] for c in r["calls"] if c["path"] == "git/trees")
+        self.assertEqual(tree["base_tree"], "basetree")
+        self.assertEqual([e["path"].split("/")[-1] for e in tree["tree"]], ["submission.md", "notes.txt", "data.csv"])
+        commit = next(c["body"] for c in r["calls"] if c["path"] == "git/commits" and c["method"] == "POST")
+        self.assertEqual(commit["author"]["name"], "Bryan")
+        self.assertEqual(commit["parents"], ["headsha"])
+        ref = next(c for c in r["calls"] if c["method"] == "PATCH")
+        self.assertEqual(ref["body"], {"sha": "newcommit"})
+        self.assertTrue(all(c["auth"] == "Bearer tok" for c in r["calls"]))
+
+    def test_W07_existing_folder_gets_a_numbered_suffix(self):
+        rules = self.github_ok()
+        rules.insert(1, {"path": "contents/submissions/", "nth": 1, "body": {"type": "dir"}})  # first check: exists
+        r = self.run_worker(github=rules)
+        self.assertEqual(r["status"], 200, r)
+        self.assertTrue(r["body"]["folder"].endswith("-my-title-2"), r["body"]["folder"])
+
+    def test_W08_oversized_file_is_rejected_before_any_github_call(self):
+        r = self.run_worker(files=[{"name": "huge.bin", "size": 25 * 1024 * 1024 + 1}])
+        self.assertEqual(r["status"], 413)
+        self.assertEqual(r["calls"], [])
+
+    def test_W09_file_names_are_sanitised_and_deduplicated(self):
+        r = self.run_worker(files=[{"name": "../../evil.txt", "content": "x"}, {"name": "evil.txt", "content": "y"}, {"name": "submission.md", "content": "z"}])
+        self.assertEqual(r["status"], 200, r)
+        self.assertEqual(r["body"]["files"], ["evil.txt", "evil-2.txt", "submission-2.md"])
+
+    def test_W10_foreign_origin_does_not_get_cors_echoed(self):
+        r = self.run_worker(method="OPTIONS", origin="https://evil.test")
+        self.assertEqual(r["headers"]["access-control-allow-origin"], "https://site.test")
+        r2 = self.run_worker(method="OPTIONS", origin="http://localhost:8000")
+        self.assertEqual(r2["headers"]["access-control-allow-origin"], "http://localhost:8000", "local dev is allowed")
+
+    def test_W11_ref_conflict_is_retried_once_on_the_new_head(self):
+        rules = self.github_ok()
+        rules.insert(0, {"path": "git/refs/heads/main", "method": "PATCH", "nth": 1, "status": 422, "body": {"message": "Update is not a fast forward"}})
+        r = self.run_worker(github=rules)
+        self.assertEqual(r["status"], 200, r)
+        patches = [c for c in r["calls"] if c["method"] == "PATCH"]
+        self.assertEqual(len(patches), 2)
+
+    def test_W12_missing_setting_is_reported(self):
+        env = dict(self.ENV); del env["GITHUB_TOKEN"]
+        r = self.run_worker(env=env)
+        self.assertEqual(r["status"], 500)
+        self.assertIn("GITHUB_TOKEN", r["body"]["error"])
 

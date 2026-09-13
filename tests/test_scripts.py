@@ -152,6 +152,7 @@ class HappyPathTests(TempDirMixin, unittest.TestCase):
                 "group",
                 "repo",
                 "branch",
+                "upload_url",
                 "members",
                 "statuses",
                 "submissions",

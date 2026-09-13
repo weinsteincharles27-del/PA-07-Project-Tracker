@@ -44,6 +44,7 @@ window.Tracker = (function () {
     data.visible = data.isAdmin ? data.submissions : data.submissions.filter((s) => s.member === viewerId);
     data.today = today();
     data.github = data.repo ? `https://github.com/${data.repo}` : "";
+    data.uploadUrl = (data.upload_url || "").trim();  // the worker that takes uploads from the Submit page
     data.blobUrl = (path) => data.github ? `${data.github}/blob/${data.branch}/${path}` : "#";
     data.treeUrl = (path) => data.github ? `${data.github}/tree/${data.branch}/${path}` : "#";
 
