@@ -1792,3 +1792,31 @@ class TestUploadWorker(ServedSiteTestCase):
         r2 = self.run_route("https://worker.test/upload", "OPTIONS")
         self.assertEqual(r2["status"], 204)
 
+    def test_W16_github_failure_during_write_is_a_json_reply_with_cors(self):
+        # Through route(), the way Cloudflare calls it, with GitHub refusing blob writes.
+        harness = r"""
+        async ({ roster }) => {
+          const mod = await import("/worker/upload.js");
+          const env = { GITHUB_TOKEN: "t", GITHUB_REPO: "owner/repo", GROUP_PASSCODE: "secret", ALLOWED_ORIGIN: "https://site.test" };
+          const fakeFetch = async (url, init) => {
+            const path = url.split("/repos/owner/repo/")[1];
+            if (path.startsWith("contents/members.json")) return new Response(JSON.stringify({ content: roster }), { status: 200 });
+            if (path.startsWith("contents/submissions/")) return new Response(JSON.stringify({ message: "Not Found" }), { status: 404 });
+            return new Response(JSON.stringify({ message: "Resource not accessible by personal access token" }), { status: 403 });
+          };
+          const form = new FormData();
+          for (const [k, v] of Object.entries({ member: "bryan", passcode: "secret", assignment: "Memo", title: "T" })) form.append(k, v);
+          form.append("files", new File(["x"], "a.txt"));
+          const req = { method: "POST", url: "https://worker.test/upload", headers: new Headers({ Origin: "https://site.test" }), formData: async () => form };
+          const res = await mod.route(req, env, fakeFetch);
+          return { status: res.status, body: await res.json(), acao: res.headers.get("access-control-allow-origin") };
+        }
+        """
+        page = self.new_page()
+        self.goto(page, "index.html?as=charlie")
+        r = page.evaluate(harness, {"roster": self.roster_b64})
+        self.assertEqual(r["status"], 502)
+        self.assertIn("GitHub 403", r["body"]["error"])
+        self.assertIn("not accessible", r["body"]["error"])
+        self.assertEqual(r["acao"], "https://site.test", "the browser must be able to read the failure")
+
