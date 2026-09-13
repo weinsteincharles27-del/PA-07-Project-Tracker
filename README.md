@@ -105,11 +105,12 @@ python3 -m http.server 8000 -d site
 Then open <http://localhost:8000/>. Pick who you are from *Viewing as* in the
 top bar. Members see only their own work; admins see everyone's.
 
-A GitHub Actions workflow rebuilds `index.json` on every push, so the checked
-in data file is always current. To publish the site with GitHub Pages
-(Settings, Pages, deploy from Actions), note that Pages on a **private** repo
-needs a paid GitHub plan; on the free plan the site runs locally as above, or
-the repo has to be public.
+A GitHub Actions workflow rebuilds `index.json` on every push to `main`,
+commits it, and publishes `site/` to GitHub Pages. Pages has to be switched
+on once in the repo's Settings (Pages, Source: GitHub Actions); after that
+every push goes live at `https://weinsteincharles27-del.github.io/PA-07-Project-Tracker/`.
+Pages on a **private** repo needs a paid GitHub plan; on the free plan the
+repo has to be public, or the site runs locally as above.
 
 ## Who can see what
 
