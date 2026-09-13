@@ -6,12 +6,18 @@
  * repo through the Git Data API: one blob per file, a new tree, a commit, and
  * a ref update. The publish workflow then rebuilds the site.
  *
- * Environment (Settings > Variables and Secrets on the worker):
+ * Routes: POST /upload (and its OPTIONS preflight) is the endpoint. Anything
+ * else is sent to the published site, so the worker's own address never
+ * shows a half-working copy of the tracker.
+ *
+ * Environment (wrangler.toml for the plain values, the worker's Settings >
+ * Variables and Secrets for the secret ones):
  *   GITHUB_TOKEN     fine-grained token with Contents: read and write (secret)
  *   GITHUB_REPO      owner/name, e.g. weinsteincharles27-del/PA-07-Project-Tracker
  *   GITHUB_BRANCH    optional, default main
  *   GROUP_PASSCODE   the passcode members type on the Submit page (secret)
  *   ALLOWED_ORIGIN   the site's origin, e.g. https://weinsteincharles27-del.github.io
+ *   SITE_URL         where to send visitors who open the worker itself
  *
  * See worker/README.md for the setup steps. No build step, no dependencies.
  */
@@ -22,9 +28,20 @@ const API = "https://api.github.com";
 
 export default {
   async fetch(request, env) {
-    return handle(request, env, fetch);
+    return route(request, env, fetch);
   },
 };
+
+export async function route(request, env, fetchImpl) {
+  const path = new URL(request.url).pathname.replace(/\/+$/, "");
+  if (path === "/upload") return handle(request, env, fetchImpl);
+  if (request.method === "GET" || request.method === "HEAD") {
+    // The tracker lives on GitHub Pages; this address is only the upload endpoint.
+    const site = env.SITE_URL || "https://weinsteincharles27-del.github.io/PA-07-Project-Tracker/";
+    return Response.redirect(site, 302);
+  }
+  return json({ error: "The upload endpoint is POST /upload" }, 404, corsHeaders(env, request));
+}
 
 export async function handle(request, env, fetchImpl) {
   const cors = corsHeaders(env, request);
