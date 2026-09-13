@@ -44,7 +44,7 @@
     </div>
     <div class="card">
       <div class="card-head"><h2>Table view</h2><span class="small muted">Same data as the chart, by person and date.</span></div>
-      <div id="table"></div>
+      <div id="table" class="table-wrap"></div>
     </div>`;
 
   const byPerson = subs.slice().sort((a, b) => a.member.localeCompare(b.member) || a.submitted.localeCompare(b.submitted));
@@ -99,16 +99,31 @@
     svg += `<text class="today-label" x="${tx + 5}" y="${52}">Today</text>`;
 
     // Marks: a filled dot at submission, a line plus hollow dot if revised later.
+    // Marks in one lane that land within 12px of each other (the same day, or
+    // neighbouring days on a long window) are spread vertically so that every
+    // submission keeps its own visible mark and its own hover/click target.
     lanes.forEach((m, i) => {
       const cy = H0 + i * LH + LH / 2;
-      subs.filter((s) => s.member === m.id).forEach((s) => {
-        const sx = x(s.submitted), ux = x(s.updated), c = T.STATUS[s.status].color;
-        if (s.updated !== s.submitted) {
-          svg += `<line class="rev-line" x1="${sx}" x2="${ux}" y1="${cy}" y2="${cy}"/>`;
-          svg += `<circle class="mark-update" cx="${ux}" cy="${cy}" r="4.5" style="stroke:${c}"/>`;
-        }
-        svg += `<circle class="mark" cx="${sx}" cy="${cy}" r="6.5" fill="${c}"/>`;
-        svg += `<rect class="hit" data-id="${T.esc(s.id)}" x="${Math.min(sx, ux) - 10}" y="${cy - 14}" width="${Math.abs(ux - sx) + 20}" height="28"/>`;
+      const mine = subs.filter((s) => s.member === m.id).sort((a, b) => a.submitted.localeCompare(b.submitted));
+      const groups = [];
+      mine.forEach((s) => {
+        const g = groups[groups.length - 1];
+        if (g && x(s.submitted) - x(g[g.length - 1].submitted) < 12) g.push(s); else groups.push([s]);
+      });
+      groups.forEach((g) => {
+        // A lone mark sits on the lane centre. Two sit 8px above and below it,
+        // three sit 12px apart, and bigger groups pack tighter to stay in the band.
+        const n = g.length, step = n === 2 ? 16 : Math.min(12, 32 / (n - 1));
+        g.forEach((s, k) => {
+          const sx = x(s.submitted), ux = x(s.updated), c = T.statusOf(s.status).color;
+          const my = cy + (k - (n - 1) / 2) * step, hh = n === 1 ? 28 : Math.min(16, step);
+          if (s.updated !== s.submitted) {
+            svg += `<line class="rev-line" x1="${sx}" x2="${ux}" y1="${my}" y2="${my}"/>`;
+            svg += `<circle class="mark-update" cx="${ux}" cy="${my}" r="4.5" style="stroke:${c}"/>`;
+          }
+          svg += `<circle class="mark" cx="${sx}" cy="${my}" r="6.5" fill="${c}"/>`;
+          svg += `<rect class="hit" data-id="${T.esc(s.id)}" x="${Math.min(sx, ux) - 10}" y="${my - hh / 2}" width="${Math.abs(ux - sx) + 20}" height="${hh}"/>`;
+        });
       });
     });
     svg += `</svg>`;

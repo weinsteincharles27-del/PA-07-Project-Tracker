@@ -39,7 +39,7 @@
       if (mine.length) {
         const s = mine.sort((x, y) => y.submitted.localeCompare(x.submitted))[0];
         const late = T.daysBetween(a.due, s.submitted) > 0;
-        return `<a class="cell" href="${T.detailHref(data, s)}" title="${T.esc(s.title)}"><span class="dot" style="--c:${T.STATUS[s.status].color}"></span><span class="tnum ${late ? "late" : ""}">${T.fmtDate(s.submitted)}${late ? " (late)" : ""}</span></a>`;
+        return `<a class="cell" href="${T.detailHref(data, s)}" title="${T.esc(s.title)}"><span class="dot" style="--c:${T.statusOf(s.status).color}"></span><span class="tnum ${late ? "late" : ""}">${T.fmtDate(s.submitted)}${late ? " (late)" : ""}</span></a>`;
       }
       const d = T.daysBetween(data.today, a.due);
       if (m.role === "admin") return `<span class="cell missing">&middot;</span>`;
@@ -48,7 +48,7 @@
     const coverage = `
       <div class="card">
         <div class="card-head"><h2>Coverage by assignment</h2><span class="small muted">Latest submission per person and assignment. Due dates under each column.</span></div>
-        <div style="overflow-x:auto"><table class="coverage">
+        <div class="table-wrap"><table class="coverage">
           <thead><tr><th>Person</th>${data.assignments.map((a) => `<th>${T.esc(a.id)} ${T.esc(a.title)}<span class="due">due ${T.fmtDate(a.due)}</span></th>`).join("")}</tr></thead>
           <tbody>${members.map((m) => `<tr><td>${T.esc(m.name)}${m.role === "admin" ? ' <span class="role admin" style="margin-left:6px">admin</span>' : ""}</td>${data.assignments.map((a) => `<td>${cell(m, a)}</td>`).join("")}</tr>`).join("")}</tbody>
         </table></div>
@@ -69,7 +69,7 @@
           <select id="f-status"><option value="">Any status</option>${T.ORDER.map((st) => `<option value="${st}">${T.STATUS[st].label}</option>`).join("")}</select>
           <span class="count" id="f-count"></span>
         </div>
-        <div id="table"></div>
+        <div id="table" class="table-wrap"></div>
       </div>`;
 
     const draw = () => {
@@ -77,7 +77,8 @@
       const rows = subs.filter((s) => (!p || s.member === p) && (!a || s.assignment === a) && (!st || s.status === st));
       document.getElementById("f-count").textContent = `${rows.length} of ${subs.length}`;
       const t = document.getElementById("table");
-      t.innerHTML = T.submissionTable(data, rows, { showPerson: true, emptyText: "Nothing matches these filters." });
+      // Blame the filters only when one is set; with none, an empty table means there is nothing yet.
+      t.innerHTML = T.submissionTable(data, rows, { showPerson: true, emptyText: p || a || st ? "Nothing matches these filters." : "" });
       T.wireRowLinks(t);
     };
     ["f-person", "f-assignment", "f-status"].forEach((id) => document.getElementById(id).addEventListener("change", draw));
@@ -98,7 +99,7 @@
     <div class="grid wide">
       <div class="card">
         <div class="card-head"><h2>Submitted</h2></div>
-        <div id="table"></div>
+        <div id="table" class="table-wrap"></div>
       </div>
       <div>
         <div class="card">
@@ -108,7 +109,7 @@
             return `<tr data-href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}"><td class="title"><a href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}">${T.esc(a.id)} ${T.esc(a.title)}</a></td><td class="date ${d < 0 ? "" : ""}">${d < 0 ? `<span style="color:var(--st-changes-requested)">${-d}d overdue</span>` : d === 0 ? "due today" : `due ${T.fmtDate(a.due)} (${d}d)`}</td></tr>`;
           }).join("")}</tbody></table>` : `<p class="muted">Everything has been submitted.</p>`}
         </div>
-        ${needsWork.length ? `<div class="card"><div class="card-head"><h2>Needs your attention</h2></div><ul class="files">${needsWork.map((s) => `<li><span class="dot" style="--c:${T.STATUS[s.status].color}"></span><a href="${T.detailHref(data, s)}">${T.esc(s.title)}</a><span class="size">${T.esc(s.review?.reviewer || "")}</span></li>`).join("")}</ul></div>` : ""}
+        ${needsWork.length ? `<div class="card"><div class="card-head"><h2>Needs your attention</h2></div><ul class="files">${needsWork.map((s) => `<li><span class="dot" style="--c:${T.statusOf(s.status).color}"></span><a href="${T.detailHref(data, s)}">${T.esc(s.title)}</a><span class="size">${T.esc(s.review?.reviewer || "")}</span></li>`).join("")}</ul></div>` : ""}
       </div>
     </div>`;
   const t = document.getElementById("table");

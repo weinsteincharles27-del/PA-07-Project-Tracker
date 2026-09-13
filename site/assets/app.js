@@ -8,6 +8,9 @@ window.Tracker = (function () {
     "approved":          { label: "Approved",          sym: "✓", color: "var(--st-approved)" },
   };
   const ORDER = ["submitted", "in-review", "changes-requested", "approved"];
+  // The known entry for a status, or a muted placeholder for anything else
+  // (a hand-edited index.json, say), so bad data renders instead of crashing.
+  const statusOf = (status) => STATUS[status] || { label: status, sym: "?", color: "var(--muted)" };
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const today = () => new Date().toISOString().slice(0, 10);
@@ -80,7 +83,7 @@ window.Tracker = (function () {
   }
 
   function chip(status) {
-    const s = STATUS[status] || { label: status, sym: "?", color: "var(--muted)" };
+    const s = statusOf(status);
     return `<span class="chip" style="--c:${s.color}"><span class="sym">${s.sym}</span>${esc(s.label)}</span>`;
   }
   function personChip(data, id) { return `<span class="chip person">${esc(data.memberById[id]?.name || id)}</span>`; }
@@ -127,6 +130,6 @@ window.Tracker = (function () {
     console.error(err);
   }
 
-  return { STATUS, ORDER, esc, today, parseDate, fmtDate, fmtDateLong, daysBetween, fmtSize, slug, initials,
+  return { STATUS, ORDER, statusOf, esc, today, parseDate, fmtDate, fmtDateLong, daysBetween, fmtSize, slug, initials,
            load, withViewer, chip, personChip, assignmentChip, detailHref, submissionTable, wireRowLinks, copyText, fail };
 })();
