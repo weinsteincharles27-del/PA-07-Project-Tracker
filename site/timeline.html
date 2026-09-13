@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner"></div></header>
+<main class="page" id="page"></main>
+<div class="tooltip" id="tip" hidden></div>
+
+<script src="assets/app.js"></script>
+<script>
+(async function () {
+  const T = window.Tracker;
+  let data;
+  try { data = await T.load(); } catch (e) { return T.fail(e); }
+  const page = document.getElementById("page");
+  const subs = data.visible;
+  const lanes = data.isAdmin ? data.members : [data.viewer];
+  const DAY = 86400000;
+
+  // Date window: a few days before the first event to a few days after the last.
+  const dates = subs.flatMap((s) => [s.submitted, s.updated]).concat(data.assignments.map((a) => a.due), [data.today]).filter(Boolean).sort();
+  const start = new Date(T.parseDate(dates[0]).getTime() - 4 * DAY);
+  const end = new Date(T.parseDate(dates[dates.length - 1]).getTime() + 4 * DAY);
+  const first = subs.map((s) => s.submitted).sort()[0], last = subs.map((s) => s.updated).sort().pop();
+
+  page.innerHTML = `
+    <div class="page-head">
+      <div><h1>Timeline</h1><p class="lede">${data.isAdmin ? `Every submission from every person, ${subs.length} in all${first ? `, ${T.fmtDate(first)} to ${T.fmtDate(last)}` : ""}.` : `Your submissions, ${subs.length} so far. Admins see every lane; you see yours.`} Hover a mark for details, click to open it.</p></div>
+      <a class="btn" href="${T.withViewer("index.html", data)}">Back to dashboard</a>
+    </div>
+    <div class="card">
+      <div class="legend">
+        ${T.ORDER.map((st) => `<span><span class="dot" style="--c:${T.STATUS[st].color}"></span>${T.STATUS[st].label}</span>`).join("")}
+        <span><span class="line" style="border-color:var(--muted)"></span> revised after submitting</span>
+        <span><span class="line dashed"></span> assignment due</span>
+        <span><span class="line" style="border-color:var(--accent)"></span> today</span>
+      </div>
+      <div class="timeline-wrap"><div class="timeline" id="chart"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Table view</h2><span class="small muted">Same data as the chart, by person and date.</span></div>
+      <div id="table"></div>
+    </div>`;
+
+  const byPerson = subs.slice().sort((a, b) => a.member.localeCompare(b.member) || a.submitted.localeCompare(b.submitted));
+  document.getElementById("table").innerHTML = T.submissionTable(data, byPerson, { showPerson: data.isAdmin, emptyText: "No submissions to show yet." });
+  T.wireRowLinks(document.getElementById("table"));
+
+  const chart = document.getElementById("chart");
+  const tip = document.getElementById("tip");
+
+  function draw() {
+    const W = Math.max(900, chart.parentElement.clientWidth);
+    const L = 170, R = 28, H0 = 64, LH = 48;
+    const H = H0 + lanes.length * LH + 12;
+    const x = (d) => L + ((T.parseDate(d) - start) / (end - start)) * (W - L - R);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Submissions timeline">`;
+
+    // Lane bands and labels.
+    lanes.forEach((m, i) => {
+      const y = H0 + i * LH;
+      if (i % 2 === 0) svg += `<rect class="lane-band" x="${L}" y="${y}" width="${W - L - R}" height="${LH}"/>`;
+      const n = subs.filter((s) => s.member === m.id).length;
+      svg += `<text class="lane-label" x="16" y="${y + LH / 2 - 2}">${T.esc(m.name)}</text>`;
+      svg += `<text class="lane-sub" x="16" y="${y + LH / 2 + 13}">${n} submission${n === 1 ? "" : "s"}${m.role === "admin" ? ", admin" : ""}</text>`;
+      svg += `<line class="grid-line" x1="${L}" x2="${W - R}" y1="${y + LH}" y2="${y + LH}"/>`;
+    });
+
+    // Week ticks (Mondays) and month labels along the top.
+    let seenMonth = "";
+    for (let d = new Date(start); d <= end; d = new Date(d.getTime() + DAY)) {
+      const iso = d.toISOString().slice(0, 10);
+      const month = iso.slice(0, 7);
+      if (month !== seenMonth) {
+        seenMonth = month;
+        const mx = Math.max(x(iso), L + 2);
+        svg += `<text class="month-label" x="${mx}" y="16">${d.toLocaleDateString("en-US", { month: "long", timeZone: "UTC" })}</text>`;
+      }
+      if (d.getUTCDay() === 1) {
+        svg += `<line class="grid-line" x1="${x(iso)}" x2="${x(iso)}" y1="${H0}" y2="${H - 12}"/>`;
+        svg += `<text class="tick-label" x="${x(iso)}" y="${34}" text-anchor="middle">${T.fmtDate(iso)}</text>`;
+      }
+    }
+    svg += `<line class="axis-line" x1="${L}" x2="${W - R}" y1="${H0}" y2="${H0}"/>`;
+
+    // Due dates and today.
+    data.assignments.forEach((a) => {
+      const ax = x(a.due);
+      svg += `<line class="due-line" x1="${ax}" x2="${ax}" y1="${H0 - 8}" y2="${H - 12}"><title>${T.esc(a.id)} ${T.esc(a.title)} due ${T.fmtDate(a.due)}</title></line>`;
+      svg += `<text class="due-label" x="${ax}" y="${52}" text-anchor="middle">${T.esc(a.id)}</text>`;
+    });
+    const tx = x(data.today);
+    svg += `<line class="today-line" x1="${tx}" x2="${tx}" y1="${H0 - 8}" y2="${H - 12}"/>`;
+    svg += `<text class="today-label" x="${tx + 5}" y="${52}">Today</text>`;
+
+    // Marks: a filled dot at submission, a line plus hollow dot if revised later.
+    lanes.forEach((m, i) => {
+      const cy = H0 + i * LH + LH / 2;
+      subs.filter((s) => s.member === m.id).forEach((s) => {
+        const sx = x(s.submitted), ux = x(s.updated), c = T.STATUS[s.status].color;
+        if (s.updated !== s.submitted) {
+          svg += `<line class="rev-line" x1="${sx}" x2="${ux}" y1="${cy}" y2="${cy}"/>`;
+          svg += `<circle class="mark-update" cx="${ux}" cy="${cy}" r="4.5" style="stroke:${c}"/>`;
+        }
+        svg += `<circle class="mark" cx="${sx}" cy="${cy}" r="6.5" fill="${c}"/>`;
+        svg += `<rect class="hit" data-id="${T.esc(s.id)}" x="${Math.min(sx, ux) - 10}" y="${cy - 14}" width="${Math.abs(ux - sx) + 20}" height="28"/>`;
+      });
+    });
+    svg += `</svg>`;
+    chart.innerHTML = svg;
+
+    chart.querySelectorAll(".hit").forEach((el) => {
+      const s = subs.find((z) => z.id === el.dataset.id);
+      el.addEventListener("mousemove", (e) => {
+        const a = data.assignmentById[s.assignment];
+        tip.innerHTML = `<div class="t">${T.esc(s.title)}</div><div class="m">${T.esc(data.memberById[s.member].name)} &middot; ${T.esc(s.assignment)} ${T.esc(a ? a.title : "")}</div><div class="m">Submitted ${T.fmtDateLong(s.submitted)}${s.updated !== s.submitted ? `, revised ${T.fmtDate(s.updated)}` : ""}</div><div style="margin-top:4px">${T.chip(s.status)}</div>`;
+        tip.hidden = false;
+        tip.style.left = `${Math.min(e.clientX + 14, window.innerWidth - 300)}px`;
+        tip.style.top = `${e.clientY + 14}px`;
+      });
+      el.addEventListener("mouseleave", () => (tip.hidden = true));
+      el.addEventListener("click", () => (location.href = T.detailHref(data, s)));
+    });
+  }
+  draw();
+  let t; window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw, 120); });
+})();
+</script>
+</body>
+</html>
