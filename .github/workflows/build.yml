@@ -1,0 +1,38 @@
+# Rebuild site/data/index.json whenever submissions or reviews change, and
+# commit the result so the checked-in data file always matches the repo.
+name: Build tracker data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "submissions/**"
+      - "reviews/**"
+      - "members.json"
+      - "assignments.json"
+      - "scripts/build.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so submission dates come from git
+      - name: Build index
+        run: python3 scripts/build.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- site/data/index.json; then
+            echo "index.json unchanged"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add site/data/index.json
+            git commit -m "Rebuild tracker index"
+            git push
+          fi
