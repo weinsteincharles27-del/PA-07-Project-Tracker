@@ -1,5 +1,5 @@
 ---
 title: Data collection memo
-assignment: A2
+assignment: Data collection memo
 submitted: 2026-09-02
 ---

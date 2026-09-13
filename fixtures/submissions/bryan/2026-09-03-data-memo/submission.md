@@ -1,6 +1,6 @@
 ---
 title: Data collection memo
-assignment: A2
+assignment: Data collection memo
 submitted: 2026-09-03
 updated: 2026-09-07
 notes: Second upload adds the Q2 FEC pull.

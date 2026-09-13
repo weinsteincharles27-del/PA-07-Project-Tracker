@@ -113,7 +113,6 @@ def list_files(folder, root):
 
 def build(root):
     members = json.load(open(os.path.join(REPO, "members.json")))
-    assignments = json.load(open(os.path.join(REPO, "assignments.json")))["assignments"]
     by_id = {m["id"]: m for m in members["members"]}
     subs_dir = os.path.join(root, "submissions")
     revs_dir = os.path.join(root, "reviews")
@@ -175,7 +174,6 @@ def build(root):
         "repo": members.get("repo", ""),
         "branch": members.get("branch", "main"),
         "members": members["members"],
-        "assignments": assignments,
         "statuses": list(STATUSES),
         "submissions": submissions,
     }

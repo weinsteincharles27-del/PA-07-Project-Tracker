@@ -31,8 +31,6 @@
   }
 
   const owner = data.memberById[sub.member];
-  const a = data.assignmentById[sub.assignment];
-  const late = a ? T.daysBetween(a.due, sub.submitted) : 0;
   const folder = `submissions/${sub.member}/${sub.folder}`;
   const reviewPath = `reviews/${sub.member}/${sub.folder}.md`;
   const comments = sub.review?.comments || [];
@@ -43,14 +41,14 @@
     <div class="page-head">
       <div>
         <h1>${T.esc(sub.title)}</h1>
-        <div class="btn-row" style="margin-top:6px">${T.personChip(data, sub.member)} ${T.assignmentChip(data, sub.assignment)} <span class="small ink2">${T.esc(a ? a.title : "")}</span> ${T.chip(sub.status)}</div>
+        <div class="btn-row" style="margin-top:6px">${T.personChip(data, sub.member)} ${T.assignmentChip(data, sub.assignment)} ${T.chip(sub.status)}</div>
       </div>
       ${data.github ? `<a class="btn" href="${data.treeUrl(folder)}" target="_blank" rel="noopener">Open folder on GitHub</a>` : ""}
     </div>
 
     <div class="card">
       <div class="meta">
-        <div><div class="k">Submitted</div><div class="v tnum">${T.fmtDateLong(sub.submitted)}${late > 0 ? ` <span class="small" style="color:var(--st-changes-requested)">${late}d late</span>` : a ? ` <span class="small muted">due ${T.fmtDate(a.due)}</span>` : ""}</div></div>
+        <div><div class="k">Submitted</div><div class="v tnum">${T.fmtDateLong(sub.submitted)}</div></div>
         <div><div class="k">Last updated</div><div class="v tnum">${sub.updated !== sub.submitted ? T.fmtDateLong(sub.updated) : '<span class="muted">No revisions</span>'}</div></div>
         <div><div class="k">Submitted by</div><div class="v">${T.esc(sub.submitted_by)}</div></div>
         <div><div class="k">Folder</div><div class="v mono small" style="font-weight:500">${T.esc(folder)}</div></div>

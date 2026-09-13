@@ -19,7 +19,6 @@
   const page = document.getElementById("page");
   const params = new URLSearchParams(location.search);
   const me = data.viewer;
-  const done = new Set(data.submissions.filter((s) => s.member === me.id).map((s) => s.assignment));
 
   page.innerHTML = `
     <div class="page-head">
@@ -28,7 +27,9 @@
     <div class="grid two">
       <div class="card">
         <div class="field"><label for="s-assignment">Assignment</label>
-          <select id="s-assignment">${data.assignments.map((a) => `<option value="${a.id}" ${params.get("assignment") === a.id ? "selected" : ""}>${T.esc(a.id)} ${T.esc(a.title)}, due ${T.fmtDate(a.due)}${done.has(a.id) ? " (already submitted, this adds a revision)" : ""}</option>`).join("")}</select></div>
+          <input id="s-assignment" list="assignment-names" value="${T.esc(params.get("assignment") || "")}" placeholder="For example: Literature review, Problem set 3">
+          <datalist id="assignment-names">${data.assignmentNames.map((n) => `<option value="${T.esc(n)}"></option>`).join("")}</datalist>
+          <span class="help">Type it the way it was given to you. Names already in use appear as suggestions.</span></div>
         <div class="field"><label for="s-title">Title</label><input id="s-title" placeholder="What is this? For example: Literature review, first pass"><span class="help">Short and specific. It becomes the folder name.</span></div>
         <div class="field"><label for="s-notes">One-line note (optional)</label><input id="s-notes" placeholder="Anything the reviewer should know up front"></div>
         <div class="field"><label for="s-body">Description (optional)</label><textarea id="s-body" placeholder="What you did, what is still open, what you want feedback on."></textarea></div>
@@ -81,18 +82,18 @@
   }));
 
   function build() {
-    const a = data.assignmentById[$("s-assignment").value];
-    const title = $("s-title").value.trim() || a.title;
+    const assignment = $("s-assignment").value.trim();
+    const title = $("s-title").value.trim() || "Untitled";
     const notes = $("s-notes").value.trim();
     const body = $("s-body").value.trim();
     const folder = `${data.today}-${T.slug(title)}`;
     const path = `submissions/${me.id}/${folder}`;
-    const md = `---\ntitle: ${title}\nassignment: ${a.id}\n${notes ? `notes: ${notes}\n` : ""}---\n${body ? body + "\n" : ""}`;
-    const msg = `${me.name}: ${a.id} ${title}`;
+    const md = `---\ntitle: ${title}\nassignment: ${assignment}\n${notes ? `notes: ${notes}\n` : ""}---\n${body ? body + "\n" : ""}`;
+    const msg = `${me.name}: ${title} (${assignment})`;
     const q = (s) => `'${s.replace(/'/g, "'\\''")}'`;
     const git = [`mkdir -p ${path}`, `# save submission.md there, then copy your files in`, `git add ${path}`, `git commit -m ${q(msg)}`, `git push`].join("\n");
-    const script = `python3 scripts/submit.py --as ${me.id} --assignment ${a.id} --title ${q(title)}${notes ? ` --notes ${q(notes)}` : ""} ${files.length ? files.map((f) => q(f.name)).join(" ") : "<your files>"} --push`;
-    return { a, title, notes, body, folder, path, md, msg, git, script };
+    const script = `python3 scripts/submit.py --as ${me.id} --assignment ${q(assignment)} --title ${q(title)}${notes ? ` --notes ${q(notes)}` : ""} ${files.length ? files.map((f) => q(f.name)).join(" ") : "<your files>"} --push`;
+    return { assignment, title, notes, body, folder, path, md, msg, git, script };
   }
 
   function render() {
@@ -110,6 +111,7 @@
 
   $("s-go").addEventListener("click", () => {
     const b = build();
+    if (!$("s-assignment").value.trim()) { $("s-assignment").focus(); $("s-hint").textContent = "Which assignment is this for?"; return; }
     if (!$("s-title").value.trim()) { $("s-title").focus(); $("s-hint").textContent = "Give it a title first."; return; }
     if (!data.github) return;
     window.open(`${data.github}/upload/${data.branch}/${b.path}`, "_blank", "noopener");

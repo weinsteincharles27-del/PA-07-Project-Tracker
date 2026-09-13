@@ -1,6 +1,6 @@
 ---
 title: Literature review, first pass
-assignment: A1
+assignment: Literature review
 submitted: 2026-08-26
 notes: Covers the competitiveness and redistricting literature.
 ---

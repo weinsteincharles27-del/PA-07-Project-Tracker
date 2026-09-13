@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Create a submission folder, commit it, and (optionally) push it.
 
-    python3 scripts/submit.py --as bryan --assignment A2 --title "Data collection memo" memo.md sources.csv --push
+    python3 scripts/submit.py --as bryan --assignment "Data memo" --title "Sources and cadence" memo.md sources.csv --push
 
 Makes submissions/<member>/<today>-<slug>/ with a submission.md and copies of
-the files, then commits with the message "<Name>: <A2> <title>". The commit
-date is the submission date the tracker shows.
+the files, then commits with the message "<Name>: <title> (<assignment>)".
+The commit date is the submission date the tracker shows.
 """
 import argparse
 import datetime as dt
@@ -25,10 +25,9 @@ def slug(s):
 
 def main():
     members = json.load(open(os.path.join(REPO, "members.json")))["members"]
-    assignments = json.load(open(os.path.join(REPO, "assignments.json")))["assignments"]
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--as", dest="member", required=True, choices=[m["id"] for m in members], help="your member id")
-    ap.add_argument("--assignment", required=True, choices=[a["id"] for a in assignments])
+    ap.add_argument("--assignment", required=True, help="assignment name, typed exactly as it was given to you")
     ap.add_argument("--title", required=True)
     ap.add_argument("--notes", default="", help="one-line note for the reviewer")
     ap.add_argument("--body", default="", help="longer description (markdown)")
@@ -38,6 +37,8 @@ def main():
     args = ap.parse_args()
 
     name = next(m["name"] for m in members if m["id"] == args.member)
+    if not args.assignment.strip() or not args.title.strip():
+        sys.exit("--assignment and --title cannot be blank")
     # Check every input before touching the repo, so a typo cannot leave a
     # half-created folder behind.
     missing = [src for src in args.files if not os.path.isfile(src)]
@@ -69,7 +70,7 @@ def main():
     print(f"created {rel}/ with submission.md and {len(args.files)} file(s)")
     if args.no_commit:
         return
-    msg = f"{name}: {args.assignment} {args.title}"
+    msg = f"{name}: {args.title} ({args.assignment})"
     subprocess.run(["git", "add", rel], cwd=REPO, check=True)
     subprocess.run(["git", "commit", "-q", "-m", msg], cwd=REPO, check=True)
     print(f"committed: {msg}")

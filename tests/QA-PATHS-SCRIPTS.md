@@ -31,7 +31,7 @@ Checklist of happy and unhappy paths identified for the three pipeline scripts. 
 | P-18 | Front matter with CRLF line endings parses correctly | Yes |
 | P-19 | A `submission.md` that is only `---\n---` (empty front matter, empty body) does not crash | Yes |
 | P-20 | A folder name with spaces and unicode characters is indexed correctly | Yes |
-| P-21 | A submission whose `assignment:` is not in assignments.json is still indexed, not crash | Yes |
+| P-21 | Any `assignment:` text is indexed as typed (there is no fixed list) | Yes |
 | P-22 | Nested subfolders inside a submission folder are skipped entirely by `list_files` (not walked recursively); this is not documented in README.md | Yes |
 | P-23 | An empty (but existing) submissions/ directory builds to 0 submissions | Yes |
 | P-24 | `--root` pointing at a directory with no `.git` anywhere: dates fall back to filesystem mtimes, `dates_from == "filesystem"` | Yes |
@@ -48,7 +48,7 @@ Checklist of happy and unhappy paths identified for the three pipeline scripts. 
 | ID | Description | Covered |
 |----|--------------|---------|
 | P-30 | An unknown `--as` value is rejected by argparse (`choices=`), nonzero exit | Yes |
-| P-31 | An unknown `--assignment` value is rejected by argparse, nonzero exit | Yes |
+| P-31 | A blank `--assignment` is rejected with a message, nonzero exit, and nothing created | Yes |
 | P-32 | A title that slugs to empty (e.g. `"!!!"`) still produces a folder, using the `"submission"` fallback slug | Yes |
 | P-33 | A title with quotes and unicode (`Café "Results" v2 — 100%`) round-trips correctly through `submission.md`'s front matter | Yes |
 | P-34 | A duplicate folder on the same day exits nonzero with a message and does not overwrite the original `submission.md` | Yes |
@@ -68,7 +68,7 @@ Checklist of happy and unhappy paths identified for the three pipeline scripts. 
 | P-43 | Every review file under `fixtures/reviews/` has a matching submission folder under `fixtures/submissions/` | Yes |
 | P-44 | Every `status` in the sample index is one of the four allowed statuses | Yes |
 | P-45 | Every `member` referenced in the sample index exists in members.json | Yes |
-| P-46 | Every non-empty `assignment` id referenced in the sample index exists in assignments.json | Yes |
+| P-46 | The sample index has no `assignments` key and every submission carries a non-empty typed assignment name | Yes |
 | P-47 | `scripts/mockup.py` runs to completion and writes 8 PNGs into `mockups/` (smoke test only, not tested deeply) | Yes |
 
 ## Round two: fix-specific regressions (submit.py validate/cleanup, build.py submitted_by)

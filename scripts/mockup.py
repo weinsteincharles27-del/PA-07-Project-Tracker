@@ -29,7 +29,7 @@ SHOTS = [
     ("03-timeline-admin.png",    "timeline.html?as=charlie", "Timeline, one lane per person"),
     ("04-timeline-member.png",   "timeline.html?as=kiley",  "Timeline as a member: their lane only"),
     ("05-submission-review.png", "submission.html?as=prof-crain&id=bryan%2F2026-09-03-data-memo", "A submission with its review thread, as Prof. Crain"),
-    ("06-submit.png",            "submit.html?as=aanika&assignment=A4", "The submit form, as a member"),
+    ("06-submit.png",            "submit.html?as=aanika", "The submit form, as a member"),
     ("07-no-access.png",         "submission.html?as=max&id=bryan%2F2026-09-03-data-memo", "A member opening someone else's submission"),
 ]
 
@@ -82,7 +82,8 @@ def main():
             page.screenshot(path=os.path.join(OUT, name), full_page=True)
             print(f"{name:28s} {desc}")
         # One interaction shot: type into the submit form so the generated output is visible.
-        page.goto(base + "submit.html?as=bode&assignment=A3", wait_until="networkidle")
+        page.goto(base + "submit.html?as=bode", wait_until="networkidle")
+        page.fill("#s-assignment", "Cleaned dataset + codebook")
         page.fill("#s-title", "Cleaned turnout dataset")
         page.fill("#s-notes", "Two cycles only; 2018 still being checked.")
         page.set_input_files("#s-files", [

@@ -5,5 +5,5 @@ reviewer: Charlie
 
 ## 2026-09-01 Charlie
 
-Approved. Please keep an eye on due dates for the next one; the memo builds on this so late work stacks up quickly.
+Sample review: approved. The memo builds on this, so it is worth starting early.
 

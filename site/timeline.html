@@ -23,7 +23,7 @@
   const DAY = 86400000;
 
   // Date window: a few days before the first event to a few days after the last.
-  const dates = subs.flatMap((s) => [s.submitted, s.updated]).concat(data.assignments.map((a) => a.due), [data.today]).filter(Boolean).sort();
+  const dates = subs.flatMap((s) => [s.submitted, s.updated]).concat([data.today]).filter(Boolean).sort();
   const start = new Date(T.parseDate(dates[0]).getTime() - 4 * DAY);
   const end = new Date(T.parseDate(dates[dates.length - 1]).getTime() + 4 * DAY);
   const first = subs.map((s) => s.submitted).sort()[0], last = subs.map((s) => s.updated).sort().pop();
@@ -37,7 +37,6 @@
       <div class="legend">
         ${T.ORDER.map((st) => `<span><span class="dot" style="--c:${T.STATUS[st].color}"></span>${T.STATUS[st].label}</span>`).join("")}
         <span><span class="line" style="border-color:var(--muted)"></span> revised after submitting</span>
-        <span><span class="line dashed"></span> assignment due</span>
         <span><span class="line" style="border-color:var(--accent)"></span> today</span>
       </div>
       <div class="timeline-wrap"><div class="timeline" id="chart"></div></div>
@@ -88,12 +87,7 @@
     }
     svg += `<line class="axis-line" x1="${L}" x2="${W - R}" y1="${H0}" y2="${H0}"/>`;
 
-    // Due dates and today.
-    data.assignments.forEach((a) => {
-      const ax = x(a.due);
-      svg += `<line class="due-line" x1="${ax}" x2="${ax}" y1="${H0 - 8}" y2="${H - 12}"><title>${T.esc(a.id)} ${T.esc(a.title)} due ${T.fmtDate(a.due)}</title></line>`;
-      svg += `<text class="due-label" x="${ax}" y="${52}" text-anchor="middle">${T.esc(a.id)}</text>`;
-    });
+    // Today.
     const tx = x(data.today);
     svg += `<line class="today-line" x1="${tx}" x2="${tx}" y1="${H0 - 8}" y2="${H - 12}"/>`;
     svg += `<text class="today-label" x="${tx + 5}" y="${52}">Today</text>`;
@@ -132,8 +126,7 @@
     chart.querySelectorAll(".hit").forEach((el) => {
       const s = subs.find((z) => z.id === el.dataset.id);
       el.addEventListener("mousemove", (e) => {
-        const a = data.assignmentById[s.assignment];
-        tip.innerHTML = `<div class="t">${T.esc(s.title)}</div><div class="m">${T.esc(data.memberById[s.member].name)} &middot; ${T.esc(s.assignment)} ${T.esc(a ? a.title : "")}</div><div class="m">Submitted ${T.fmtDateLong(s.submitted)}${s.updated !== s.submitted ? `, revised ${T.fmtDate(s.updated)}` : ""}</div><div style="margin-top:4px">${T.chip(s.status)}</div>`;
+        tip.innerHTML = `<div class="t">${T.esc(s.title)}</div><div class="m">${T.esc(data.memberById[s.member].name)} &middot; ${T.esc(s.assignment || "no assignment")}</div><div class="m">Submitted ${T.fmtDateLong(s.submitted)}${s.updated !== s.submitted ? `, revised ${T.fmtDate(s.updated)}` : ""}</div><div style="margin-top:4px">${T.chip(s.status)}</div>`;
         tip.hidden = false;
         tip.style.left = `${Math.min(e.clientX + 14, window.innerWidth - 300)}px`;
         tip.style.top = `${e.clientY + 14}px`;
