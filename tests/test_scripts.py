@@ -153,7 +153,6 @@ class HappyPathTests(TempDirMixin, unittest.TestCase):
                 "repo",
                 "branch",
                 "members",
-                "assignments",
                 "statuses",
                 "submissions",
             },
@@ -345,7 +344,7 @@ class BuildUnhappyPathTests(TempDirMixin, unittest.TestCase):
         self.assertEqual(s["folder"], folder)
         self.assertEqual(s["id"], f"aanika/{folder}")
 
-    def test_P21_assignment_not_in_assignments_json(self):
+    def test_P21_any_assignment_text_is_indexed(self):
         root = self.mkdtemp()
         write_submission(
             root,
@@ -550,10 +549,13 @@ class SubmitScriptTests(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("invalid choice", r.stderr)
 
-    def test_P31_unknown_assignment_value_rejected(self):
-        r = self.run_submit("--as", "bryan", "--assignment", "A99", "--title", "X")
+    def test_P31_blank_assignment_rejected(self):
+        # The assignment is free text, but it cannot be blank.
+        r = self.run_submit("--as", "bryan", "--assignment", "   ", "--title", "X")
         self.assertNotEqual(r.returncode, 0)
-        self.assertIn("invalid choice", r.stderr)
+        self.assertIn("cannot be blank", r.stderr)
+        today = dt.date.today().isoformat()
+        self.assertFalse(os.path.isdir(os.path.join(self.clone, "submissions", "bryan", f"{today}-x")))
 
     def test_P32_title_slugs_to_empty_still_creates_folder(self):
         r = self.run_submit("--as", "bryan", "--assignment", "A2", "--title", "!!!", "--no-commit")
@@ -614,11 +616,11 @@ class SubmitScriptTests(unittest.TestCase):
 
     def test_P37_commit_message_format(self):
         r = self.run_submit(
-            "--as", "bode", "--assignment", "A4", "--title", "Committed Test"
+            "--as", "bode", "--assignment", "Preliminary results", "--title", "Committed Test"
         )
         self.assertEqual(r.returncode, 0, r.stderr)
         subject = run_git(["log", "-1", "--format=%s"], self.clone).stdout.strip()
-        self.assertEqual(subject, "Bode: A4 Committed Test")
+        self.assertEqual(subject, "Bode: Committed Test (Preliminary results)")
 
 
 # ---------------------------------------------------------------------------
@@ -687,12 +689,12 @@ class CrossCuttingTests(unittest.TestCase):
         for s in data["submissions"]:
             self.assertIn(s["member"], member_ids)
 
-    def test_P46_sample_index_assignments_all_known(self):
+    def test_P46_sample_index_assignments_are_typed_names(self):
+        # No fixed list: every sample submission carries a non-empty typed name.
         data = read_json(os.path.join(REPO, "site", "data", "sample-index.json"))
-        assignment_ids = {a["id"] for a in data["assignments"]}
+        self.assertNotIn("assignments", data)
         for s in data["submissions"]:
-            if s["assignment"]:
-                self.assertIn(s["assignment"], assignment_ids)
+            self.assertTrue(s["assignment"].strip(), s["id"])
 
     def test_P47_mockup_runs_and_produces_8_pngs(self):
         out_dir = os.path.join(REPO, "mockups")

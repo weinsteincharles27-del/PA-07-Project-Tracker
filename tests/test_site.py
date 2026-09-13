@@ -278,8 +278,10 @@ class TestDashboard(ServedSiteTestCase):
         page = self.new_page()
         self.goto(page, "index.html?as=charlie")
         headers = page.locator("table.coverage thead th")
-        # +1 for the leading "Person" column
-        self.assertEqual(headers.count(), len(SAMPLE["assignments"]) + 1)
+        names = sorted({s["assignment"] for s in SAMPLE["submissions"] if s["assignment"]})
+        # +1 for the leading "Person" column; one column per typed name in use
+        self.assertEqual(headers.count(), len(names) + 1)
+        self.assertEqual([h.strip() for h in headers.all_inner_texts()][1:], names)
         self.assert_clean(page, "coverage grid columns")
 
     def test_S16_filter_by_person_narrows_table(self):
@@ -299,8 +301,8 @@ class TestDashboard(ServedSiteTestCase):
         page = self.new_page()
         self.goto(page, "index.html?as=charlie")
         total = len(SAMPLE["submissions"])
-        expect = len([s for s in SAMPLE["submissions"] if s["assignment"] == "A2"])
-        page.select_option("#f-assignment", "A2")
+        expect = len([s for s in SAMPLE["submissions"] if s["assignment"] == "Data collection memo"])
+        page.select_option("#f-assignment", "Data collection memo")
         self.assertEqual(page.locator("#f-count").inner_text(), f"{expect} of {total}")
         self.assert_clean(page, "filter by assignment")
 
@@ -325,16 +327,15 @@ class TestDashboard(ServedSiteTestCase):
         self.assertEqual(page.locator("#table table.list thead th:has-text('Person')").count(), 0)
         self.assert_clean(page, "member dashboard")
 
-    def test_S20_member_still_to_submit_lists_missing_assignments(self):
+    def test_S20_member_view_has_submitting_help_and_no_due_list(self):
+        # Assignments are typed, not listed, so there is nothing to mark as
+        # "still to submit"; the member gets a short how-to card instead.
         self.write_data(SAMPLE)
         page = self.new_page()
         self.goto(page, "index.html?as=bryan")
-        done = {s["assignment"] for s in SAMPLE["submissions"] if s["member"] == "bryan"}
-        expected_missing = [a["id"] for a in SAMPLE["assignments"] if a["id"] not in done]
-        text = page.locator(".card:has-text('Still to submit')").inner_text()
-        for aid in expected_missing:
-            self.assertIn(aid, text, f"{aid} should be listed as still to submit")
-        self.assert_clean(page, "still to submit")
+        self.assertEqual(page.locator(".card:has-text('Still to submit')").count(), 0)
+        self.assertIn("Type the assignment name", page.locator(".card:has-text('Submitting')").inner_text())
+        self.assert_clean(page, "member submitting help")
 
     def test_S21_submit_work_button_links_with_as(self):
         self.write_data(SAMPLE)
@@ -351,9 +352,7 @@ class TestDashboard(ServedSiteTestCase):
         self.goto(page, "index.html?as=max")
         self.assertEqual(page.locator("#table table.list tbody tr").count(), 1)
         self.assertIn("have not submitted anything", page.locator("#table").inner_text())
-        text = page.locator(".card:has-text('Still to submit')").inner_text()
-        for a in SAMPLE["assignments"]:
-            self.assertIn(a["id"], text)
+        self.assertEqual(page.locator(".card:has-text('Submitting')").count(), 1)
         self.assert_clean(page, "zero-submission member")
 
     def test_S23_orphan_assignment_id_does_not_crash_dashboard(self):
@@ -394,7 +393,7 @@ class TestDashboard(ServedSiteTestCase):
         reads T.STATUS[s.status].color with no fallback (unlike chip(), which
         has one), so this is expected to throw and fail assert_clean."""
         data = clone(SAMPLE)
-        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "A2"][0])
+        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "Data collection memo"][0])
         bad["id"] = "kayla/2026-09-09-bad-status"
         bad["folder"] = "2026-09-09-bad-status"
         bad["status"] = "needs-revision"
@@ -472,13 +471,15 @@ class TestTimeline(ServedSiteTestCase):
         self.assertEqual(page.locator("line.rev-line").count(), total - len(same))
         self.assert_clean(page, "no revision line for equal dates")
 
-    def test_S33_due_line_per_assignment(self):
+    def test_S33_no_due_lines_without_an_assignment_list(self):
         self.write_data(SAMPLE)
         page = self.new_page()
         self.goto(page, "timeline.html?as=charlie")
-        self.assertEqual(page.locator("line.due-line").count(), len(SAMPLE["assignments"]))
-        self.assertEqual(page.locator("text.due-label").count(), len(SAMPLE["assignments"]))
-        self.assert_clean(page, "due lines")
+        self.assertEqual(page.locator("line.due-line").count(), 0)
+        self.assertEqual(page.locator("text.due-label").count(), 0)
+        self.assertNotIn("assignment due", page.locator(".legend").inner_text())
+        self.assertEqual(page.locator("line.today-line").count(), 1)
+        self.assert_clean(page, "no due lines")
 
     def test_S34_today_line_present(self):
         self.write_data(SAMPLE)
@@ -745,12 +746,15 @@ class TestSubmit(ServedSiteTestCase):
         self.assertEqual(page.eval_on_selector("#s-assignment", "el => el.value"), "A4")
         self.assert_clean(page, "assignment preselect")
 
-    def test_S60_unknown_assignment_falls_back(self):
+    def test_S60_assignment_param_prefills_text_field_and_names_are_suggested(self):
         self.write_data(SAMPLE)
         page = self.new_page()
-        self.goto(page, "submit.html?as=aanika&assignment=ZZZ")
-        self.assertEqual(page.eval_on_selector("#s-assignment", "el => el.value"), "A1")
-        self.assert_clean(page, "unknown assignment fallback")
+        self.goto(page, "submit.html?as=aanika&assignment=Anything%20at%20all")
+        self.assertEqual(page.eval_on_selector("#s-assignment", "el => el.value"), "Anything at all")
+        names = sorted({s["assignment"] for s in SAMPLE["submissions"] if s["assignment"]})
+        options = page.eval_on_selector_all("#assignment-names option", "els => els.map(e => e.value)")
+        self.assertEqual(sorted(options), names)
+        self.assert_clean(page, "assignment prefill and suggestions")
 
     def test_S61_title_updates_folder_and_preview(self):
         self.write_data(SAMPLE)
@@ -849,7 +853,7 @@ class TestSubmit(ServedSiteTestCase):
         git = page.locator("#s-git").inner_text()
         self.assertIn(f"mkdir -p submissions/bode/{today}-cleaned-turnout-dataset", git)
         self.assertIn("git add", git)
-        self.assertIn(sh_quote("Bode: A3 Cleaned turnout dataset"), git)
+        self.assertIn(sh_quote("Bode: Cleaned turnout dataset (A3)"), git)
         self.assert_clean(page, "terminal panel values")
 
     def test_S68_helper_script_reflects_form_values(self):
@@ -860,7 +864,7 @@ class TestSubmit(ServedSiteTestCase):
         page.fill("#s-notes", "Two cycles only.")
         script = page.locator("#s-script").inner_text()
         self.assertIn("--as bode", script)
-        self.assertIn("--assignment A3", script)
+        self.assertIn(f"--assignment {sh_quote('A3')}", script)
         self.assertIn(f"--title {sh_quote('Cleaned turnout dataset')}", script)
         self.assertIn(f"--notes {sh_quote('Two cycles only.')}", script)
         self.assert_clean(page, "helper script values")
@@ -875,7 +879,7 @@ class TestSubmit(ServedSiteTestCase):
         tree_folder = page.eval_on_selector("#s-tree b", "el => el.textContent").rstrip("/")
         self.assertTrue(tree_folder.endswith(folder_prefix_slug), tree_folder)
         git = page.locator("#s-git").inner_text()
-        self.assertIn(sh_quote(f"Bode: A3 {title}"), git)
+        self.assertIn(sh_quote(f"Bode: {title} (A3)"), git)
         self.assert_clean(page, "title with quotes")
 
     def test_S70_title_with_apostrophes_escaped(self):
@@ -886,7 +890,7 @@ class TestSubmit(ServedSiteTestCase):
         page.fill("#s-title", title)
         git = page.locator("#s-git").inner_text()
         script = page.locator("#s-script").inner_text()
-        self.assertIn(sh_quote(f"Bode: A3 {title}"), git)
+        self.assertIn(sh_quote(f"Bode: {title} (A3)"), git)
         self.assertIn(sh_quote(title), script)
         self.assert_clean(page, "title with apostrophes")
 
@@ -1001,7 +1005,7 @@ class TestStatusOfFix(ServedSiteTestCase):
 
     def test_S85_unrecognized_status_shows_muted_dot_and_raw_label_chip(self):
         data = clone(SAMPLE)
-        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "A2"][0])
+        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "Data collection memo"][0])
         bad["id"] = "kayla/2026-09-09-bad-status"
         bad["folder"] = "2026-09-09-bad-status"
         bad["title"] = "Bad Status Coverage Test"
@@ -1124,8 +1128,8 @@ class TestEmptyTextFix(ServedSiteTestCase):
         self.write_data(SAMPLE)
         page = self.new_page()
         self.goto(page, "index.html?as=charlie")
-        # A5 exists in assignments.json but no fixture submission targets it.
-        page.select_option("#f-assignment", "A5")
+        # Prof. Crain has no submissions in the sample data.
+        page.select_option("#f-person", "prof-crain")
         text = page.locator("#table").inner_text()
         self.assertIn("Nothing matches these filters.", text)
         self.assertNotIn("No submissions yet.", text)
@@ -1150,7 +1154,7 @@ class TestNewAdversarialCases(ServedSiteTestCase):
         script = page.locator("#s-script").inner_text()
         self.assertIn("--as prof-crain", script)
         msg = page.locator("#s-msg").inner_text()
-        self.assertIn("Prof. Crain: A2 Hyphen Id Test", msg)
+        self.assertIn("Prof. Crain: Hyphen Id Test (A2)", msg)
         self.assert_clean(page, "member id with hyphen through submit flow")
 
     def test_S97_empty_files_list_on_timeline_and_detail_page(self):
@@ -1225,7 +1229,7 @@ class TestNewAdversarialCases(ServedSiteTestCase):
     def test_S101_very_long_title_in_tooltip_and_coverage_grid(self):
         data = clone(SAMPLE)
         long_title = "A " + "very " * 40 + "long submission title"
-        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "A2"][0])
+        bad = clone([s for s in data["submissions"] if s["member"] == "kayla" and s["assignment"] == "Data collection memo"][0])
         bad["id"] = "kayla/2026-09-09-long-title"
         bad["folder"] = "2026-09-09-long-title"
         bad["title"] = long_title
@@ -1336,14 +1340,14 @@ class TestNewAdversarialCases(ServedSiteTestCase):
                 "submission, even though another same-day mark fully overlaps it",
             )
 
-    def test_S104_index_json_missing_assignments_key_shows_friendly_card(self):
+    def test_S104_index_json_missing_members_key_shows_friendly_card(self):
         data = clone(SAMPLE)
-        del data["assignments"]
+        del data["members"]
         self.write_data(data)
         page = self.new_page()
         self.goto(page, "index.html?as=charlie")
         self.assertIn("Could not load the tracker", page.content())
-        self.assertEqual(page._page_errors, [], "a missing 'assignments' key should be caught by T.fail(), not thrown as an uncaught exception")
+        self.assertEqual(page._page_errors, [], "a missing 'members' key should be caught by T.fail(), not thrown as an uncaught exception")
 
     def test_S105_index_json_missing_members_key_shows_friendly_card(self):
         data = clone(SAMPLE)

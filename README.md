@@ -14,7 +14,7 @@ Mockups of every page are in [`mockups/`](mockups/), rendered with sample data:
 | | |
 |---|---|
 | ![Admin dashboard](mockups/01-dashboard-admin.png) | ![Timeline](mockups/03-timeline-admin.png) |
-| Admin dashboard: everyone's work, coverage by assignment | Timeline: one lane per person, due dates and revisions |
+| Admin dashboard: everyone's work, coverage by assignment | Timeline: one lane per person, with revisions |
 | ![Review thread](mockups/05-submission-review.png) | ![Submit](mockups/08-submit-filled.png) |
 | A submission with its review thread | The submit form and what it creates |
 
@@ -32,12 +32,16 @@ submissions/<your-id>/<YYYY-MM-DD>-<short-title>/
 
 ```markdown
 ---
-title: Data collection memo
-assignment: A2
+title: Sources and update cadence
+assignment: Data collection memo
 notes: Second upload adds the Q2 FEC pull.
 ---
 Optional longer description, in markdown.
 ```
+
+The assignment is whatever you were asked to do, typed as a name. Type it
+the same way each time (the Submit page suggests names already in use), since
+the admins' coverage grid groups work by that exact name.
 
 Three ways to get it into the repo. Pick whichever you are comfortable with.
 
@@ -50,7 +54,7 @@ Three ways to get it into the repo. Pick whichever you are comfortable with.
    commands.
 3. **Helper script.** From the repo root:
    ```bash
-   python3 scripts/submit.py --as bryan --assignment A2 --title "Data collection memo" memo.md --push
+   python3 scripts/submit.py --as bryan --assignment "Data collection memo" --title "Sources and update cadence" memo.md --push
    ```
 
 To revise a submission, change the files in the same folder and commit again.
@@ -60,8 +64,7 @@ the folder name is how the tracker identifies it, so revise in place instead.
 
 Your member id is your first name in lowercase (`bryan`, `aanika`, `kiley`,
 `kayla`, `bode`, `max`, `charlie`) or `prof-crain`. The full list is in
-[`members.json`](members.json); assignments and due dates are in
-[`assignments.json`](assignments.json).
+[`members.json`](members.json).
 
 ## How reviewing works
 
@@ -134,7 +137,6 @@ so nobody rewrites history.
 
 ```
 members.json          roster, roles, and the GitHub repo the site links to
-assignments.json      assignment ids, titles, due dates
 submissions/<id>/     one folder per submission (members write here)
 reviews/<id>/         one markdown file per submission (admins write here)
 site/                 the static site; data/index.json is generated

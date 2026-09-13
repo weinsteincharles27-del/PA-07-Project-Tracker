@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T21:34:20+00:00",
+  "generated_at": "2026-09-13T17:39:58-04:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -43,33 +43,6 @@
       "id": "prof-crain",
       "name": "Prof. Crain",
       "role": "admin"
-    }
-  ],
-  "assignments": [
-    {
-      "id": "A1",
-      "title": "Literature review",
-      "due": "2026-08-28"
-    },
-    {
-      "id": "A2",
-      "title": "Data collection memo",
-      "due": "2026-09-04"
-    },
-    {
-      "id": "A3",
-      "title": "Cleaned dataset + codebook",
-      "due": "2026-09-11"
-    },
-    {
-      "id": "A4",
-      "title": "Preliminary results",
-      "due": "2026-09-25"
-    },
-    {
-      "id": "A5",
-      "title": "Draft section",
-      "due": "2026-10-09"
     }
   ],
   "statuses": [

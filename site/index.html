@@ -34,25 +34,22 @@
   if (data.isAdmin) {
     const members = data.members;
     const people = new Set(subs.map((s) => s.member)).size;
-    const cell = (m, a) => {
-      const mine = subs.filter((s) => s.member === m.id && s.assignment === a.id);
-      if (mine.length) {
-        const s = mine.sort((x, y) => y.submitted.localeCompare(x.submitted))[0];
-        const late = T.daysBetween(a.due, s.submitted) > 0;
-        return `<a class="cell" href="${T.detailHref(data, s)}" title="${T.esc(s.title)}"><span class="dot" style="--c:${T.statusOf(s.status).color}"></span><span class="tnum ${late ? "late" : ""}">${T.fmtDate(s.submitted)}${late ? " (late)" : ""}</span></a>`;
-      }
-      const d = T.daysBetween(data.today, a.due);
-      if (m.role === "admin") return `<span class="cell missing">&middot;</span>`;
-      return d < 0 ? `<span class="cell late">missing, ${-d}d overdue</span>` : `<span class="cell missing">due in ${d}d</span>`;
+    // One column per distinct assignment name people have typed.
+    const names = data.assignmentNames;
+    const cell = (m, name) => {
+      const mine = subs.filter((s) => s.member === m.id && s.assignment === name);
+      if (!mine.length) return `<span class="cell missing">&middot;</span>`;
+      const s = mine.sort((x, y) => y.submitted.localeCompare(x.submitted))[0];
+      return `<a class="cell" href="${T.detailHref(data, s)}" title="${T.esc(s.title)}"><span class="dot" style="--c:${T.statusOf(s.status).color}"></span><span class="tnum">${T.fmtDate(s.submitted)}</span></a>`;
     };
-    const coverage = `
+    const coverage = names.length ? `
       <div class="card">
-        <div class="card-head"><h2>Coverage by assignment</h2><span class="small muted">Latest submission per person and assignment. Due dates under each column.</span></div>
+        <div class="card-head"><h2>Coverage by assignment</h2><span class="small muted">Latest submission per person, one column per assignment name people have used.</span></div>
         <div class="table-wrap"><table class="coverage">
-          <thead><tr><th>Person</th>${data.assignments.map((a) => `<th>${T.esc(a.id)} ${T.esc(a.title)}<span class="due">due ${T.fmtDate(a.due)}</span></th>`).join("")}</tr></thead>
-          <tbody>${members.map((m) => `<tr><td>${T.esc(m.name)}${m.role === "admin" ? ' <span class="role admin" style="margin-left:6px">admin</span>' : ""}</td>${data.assignments.map((a) => `<td>${cell(m, a)}</td>`).join("")}</tr>`).join("")}</tbody>
+          <thead><tr><th>Person</th>${names.map((n) => `<th>${T.esc(n)}</th>`).join("")}</tr></thead>
+          <tbody>${members.map((m) => `<tr><td>${T.esc(m.name)}${m.role === "admin" ? ' <span class="role admin" style="margin-left:6px">admin</span>' : ""}</td>${names.map((n) => `<td>${cell(m, n)}</td>`).join("")}</tr>`).join("")}</tbody>
         </table></div>
-      </div>`;
+      </div>` : "";
 
     page.innerHTML = `
       <div class="page-head">
@@ -65,7 +62,7 @@
         <div class="card-head"><h2>Submissions</h2></div>
         <div class="filters">
           <select id="f-person"><option value="">Everyone</option>${members.map((m) => `<option value="${m.id}">${T.esc(m.name)}</option>`).join("")}</select>
-          <select id="f-assignment"><option value="">All assignments</option>${data.assignments.map((a) => `<option value="${a.id}">${T.esc(a.id)} ${T.esc(a.title)}</option>`).join("")}</select>
+          <select id="f-assignment"><option value="">All assignments</option>${names.map((n) => `<option value="${T.esc(n)}">${T.esc(n)}</option>`).join("")}</select>
           <select id="f-status"><option value="">Any status</option>${T.ORDER.map((st) => `<option value="${st}">${T.STATUS[st].label}</option>`).join("")}</select>
           <span class="count" id="f-count"></span>
         </div>
@@ -86,9 +83,7 @@
     return;
   }
 
-  // Member view: only their own work, plus what is due next.
-  const done = new Set(subs.map((s) => s.assignment));
-  const upcoming = data.assignments.filter((a) => !done.has(a.id)).sort((x, y) => x.due.localeCompare(y.due));
+  // Member view: only their own work, plus anything sent back to them.
   const needsWork = subs.filter((s) => s.status === "changes-requested");
   page.innerHTML = `
     <div class="page-head">
@@ -102,14 +97,11 @@
         <div id="table" class="table-wrap"></div>
       </div>
       <div>
-        <div class="card">
-          <div class="card-head"><h2>Still to submit</h2></div>
-          ${upcoming.length ? `<table class="list"><tbody>${upcoming.map((a) => {
-            const d = T.daysBetween(data.today, a.due);
-            return `<tr data-href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}"><td class="title"><a href="${T.withViewer(`submit.html?assignment=${a.id}`, data)}">${T.esc(a.id)} ${T.esc(a.title)}</a></td><td class="date ${d < 0 ? "" : ""}">${d < 0 ? `<span style="color:var(--st-changes-requested)">${-d}d overdue</span>` : d === 0 ? "due today" : `due ${T.fmtDate(a.due)} (${d}d)`}</td></tr>`;
-          }).join("")}</tbody></table>` : `<p class="muted">Everything has been submitted.</p>`}
-        </div>
         ${needsWork.length ? `<div class="card"><div class="card-head"><h2>Needs your attention</h2></div><ul class="files">${needsWork.map((s) => `<li><span class="dot" style="--c:${T.statusOf(s.status).color}"></span><a href="${T.detailHref(data, s)}">${T.esc(s.title)}</a><span class="size">${T.esc(s.review?.reviewer || "")}</span></li>`).join("")}</ul></div>` : ""}
+        <div class="card">
+          <div class="card-head"><h2>Submitting</h2></div>
+          <p class="small ink2">Use <b>Submit work</b> for each assignment. Type the assignment name the way it was given to you, so your work lines up with everyone else's on the admins' grid. To revise, upload into the same folder again.</p>
+        </div>
       </div>
     </div>`;
   const t = document.getElementById("table");

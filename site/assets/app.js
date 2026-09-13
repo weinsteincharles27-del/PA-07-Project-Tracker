@@ -29,7 +29,9 @@ window.Tracker = (function () {
     const data = await res.json();
 
     data.memberById = Object.fromEntries(data.members.map((m) => [m.id, m]));
-    data.assignmentById = Object.fromEntries(data.assignments.map((a) => [a.id, a]));
+    // Assignments are whatever people typed; the distinct names drive the
+    // coverage grid, the filters, and the submit page's suggestions.
+    data.assignmentNames = [...new Set(data.submissions.map((s) => s.assignment).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
     let viewerId = params.get("as");
     if (!viewerId) { try { viewerId = localStorage.getItem("viewer"); } catch (e) { viewerId = null; } }
@@ -87,10 +89,7 @@ window.Tracker = (function () {
     return `<span class="chip" style="--c:${s.color}"><span class="sym">${s.sym}</span>${esc(s.label)}</span>`;
   }
   function personChip(data, id) { return `<span class="chip person">${esc(data.memberById[id]?.name || id)}</span>`; }
-  function assignmentChip(data, id) {
-    const a = data.assignmentById[id];
-    return `<span class="chip assignment" title="${esc(a ? a.title : "")}">${esc(id || "n/a")}</span>`;
-  }
+  function assignmentChip(data, name) { return `<span class="chip assignment">${esc(name || "no assignment")}</span>`; }
   function detailHref(data, sub) { return withViewer(`submission.html?id=${encodeURIComponent(sub.id)}`, data); }
 
   function submissionTable(data, subs, opts) {
@@ -99,7 +98,7 @@ window.Tracker = (function () {
       <tr data-href="${detailHref(data, s)}">
         ${opts.showPerson ? `<td>${esc(data.memberById[s.member]?.name || s.member)}</td>` : ""}
         <td class="title"><a href="${detailHref(data, s)}">${esc(s.title)}</a><div class="small muted">${esc(s.notes || "")}</div></td>
-        <td>${assignmentChip(data, s.assignment)} <span class="small muted">${esc(data.assignmentById[s.assignment]?.title || "")}</span></td>
+        <td>${assignmentChip(data, s.assignment)}</td>
         <td class="date">${fmtDate(s.submitted)}</td>
         <td class="date">${s.updated !== s.submitted ? fmtDate(s.updated) : '<span class="muted">same</span>'}</td>
         <td>${chip(s.status)}</td>

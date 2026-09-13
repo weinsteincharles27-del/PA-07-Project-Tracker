@@ -35,10 +35,10 @@ and runs; it does not mean the test passes (see the QA report for failures).
 | S-17 | Admin filter by assignment narrows the table and the count updates | yes |
 | S-18 | Admin filter by status narrows the table and the count updates | yes |
 | S-19 | Member dashboard shows only that member's own rows | yes |
-| S-20 | Member "Still to submit" lists assignments they have not submitted | yes |
+| S-20 | Member view has no "Still to submit" list (assignments are typed, not listed) and shows a short how-to card instead | yes |
 | S-21 | Member "Submit work" button links to submit.html with `?as=` | yes |
 | S-22 | Member with zero submissions: empty table, all assignments listed as still-to-submit, no crash | yes |
-| S-23 | A submission whose assignment id is not in assignments.json does not crash the dashboard; coverage grid silently has no cell for it | yes |
+| S-23 | A submission with an assignment name nobody else has used gets its own coverage-grid column and does not crash the dashboard | yes |
 | S-24 | A submission title containing `<img src=x onerror=alert(1)>` renders as literal text on the dashboard table, does not execute | yes |
 | S-25 | A submission with a status value outside the four known statuses (e.g. a hand-edited index.json) | yes (fixed in round two; passes, see report) |
 | S-26 | Empty state: real site/data/index.json (0 submissions), admin view renders with sensible empty text, no JS errors | yes (fixed in round two; passes, see report) |
@@ -53,7 +53,7 @@ and runs; it does not mean the test passes (see the QA report for failures).
 | S-30 | One filled mark is drawn per submission | yes |
 | S-31 | A revision line and hollow mark are drawn when updated != submitted | yes |
 | S-32 | No revision line is drawn when updated == submitted (dates equal) | yes |
-| S-33 | A dashed due line is drawn per assignment | yes |
+| S-33 | No due lines or "assignment due" legend entry (no assignment list); the today line is still drawn | yes |
 | S-34 | A "today" line is drawn | yes |
 | S-35 | Hovering a mark shows the tooltip with title, person, assignment, dates | yes |
 | S-36 | Clicking a mark navigates to that submission's page | yes |
@@ -79,7 +79,7 @@ and runs; it does not mean the test passes (see the QA report for failures).
 | S-51 | "Copy as markdown" / preview on a submission with an existing review appends only a dated `##` entry | yes |
 | S-52 | Preview on a submission with no review yet (`review: null`) produces full front matter (status + reviewer) plus the entry | yes |
 | S-53 | A submission whose review has zero comments shows "0 comments" and does not crash | yes |
-| S-54 | A submission whose assignment id is not in assignments.json renders without crashing | yes |
+| S-54 | A submission with an unusual assignment name renders on the detail page without crashing | yes |
 | S-55 | A submission title containing `<img src=x onerror=alert(1)>` renders as literal text (h1), does not execute | yes |
 | S-56 | URL-encoded id (`%2F` for the slash, as used by nav links) resolves the correct submission | yes |
 | S-57 | A doubled slash in `?id=` is treated as not found, not a crash | yes |
@@ -90,7 +90,7 @@ and runs; it does not mean the test passes (see the QA report for failures).
 | id | description | covered |
 |----|--------------|---------|
 | S-59 | `?assignment=A4` preselects that assignment | yes |
-| S-60 | Unknown `?assignment=` value does not crash; the select falls back to its first option | yes |
+| S-60 | Any `?assignment=` value prefills the text field as given; the datalist suggests every assignment name already in use | yes |
 | S-61 | Typing a title updates the folder name in "What gets created" and the submission.md preview | yes |
 | S-62 | Adding files lists them in the file list and the tree | yes |
 | S-63 | The download link is a `data:` URL containing the generated markdown | yes |
@@ -145,7 +145,7 @@ out in that review.
 | S-101 | A very long submission title renders in full in the coverage-grid `title` attribute and the timeline hover tooltip | yes |
 | S-102 | `?as=` is case-sensitive (an uppercase id falls back like any unknown id) and percent-encoding that decodes to a real id matches normally | yes |
 | S-103 | Two submissions from the same person on the same day: each hit rectangle's own click handler navigates to the right submission when activated directly (id/href wiring is correct per element) | yes |
-| S-104 | `data/index.json` valid JSON missing the `assignments` key hits the friendly "Could not load the tracker" card, not a blank page or uncaught exception | yes |
+| S-104 | `data/index.json` valid JSON missing the `members` key hits the friendly "Could not load the tracker" card, not a blank page or uncaught exception | yes |
 | S-105 | `data/index.json` valid JSON missing the `members` key hits the same friendly card | yes |
 | S-106 | Two same-day, same-person submissions with no revision: a real mouse click centered on either one's hit rectangle should open that submission | yes (fixed: same-day marks are stacked vertically in the lane, each with its own hit target) |
 
