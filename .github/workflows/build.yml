@@ -1,0 +1,48 @@
+# On every push to main: rebuild site/data/index.json from the submissions
+# and reviews, commit it if it changed, and publish site/ to GitHub Pages.
+# Pages has to be switched on once in Settings > Pages (Source: GitHub Actions).
+name: Build and publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so submission dates come from git
+      - name: Build index
+        run: python3 scripts/build.py
+      - name: Commit index if changed
+        run: |
+          if git diff --quiet -- site/data/index.json; then
+            echo "index.json unchanged"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add site/data/index.json
+            git commit -m "Rebuild tracker index"
+            git push
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
