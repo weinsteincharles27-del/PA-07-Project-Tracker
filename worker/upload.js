@@ -34,7 +34,16 @@ export default {
 
 export async function route(request, env, fetchImpl) {
   const path = new URL(request.url).pathname.replace(/\/+$/, "");
-  if (path === "/upload") return handle(request, env, fetchImpl);
+  if (path === "/upload") {
+    // Never let an exception escape: the browser can only read a reply that
+    // carries CORS headers, so a crash would show up as "Failed to fetch".
+    try {
+      return await handle(request, env, fetchImpl);
+    } catch (e) {
+      const msg = String(e && e.message || e);
+      return json({ error: /^GitHub /.test(msg) ? msg : `Upload failed: ${msg}` }, 502, corsHeaders(env, request));
+    }
+  }
   if (request.method === "GET" || request.method === "HEAD") {
     // The tracker lives on GitHub Pages; this address is only the upload endpoint.
     const site = env.SITE_URL || "https://weinsteincharles27-del.github.io/PA-07-Project-Tracker/";

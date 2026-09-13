@@ -204,4 +204,4 @@ out in that review.
 | W-13 | GET on the worker (any path but /upload) redirects to the published site | yes |
 | W-14 | POST to a path other than /upload is a clear 404 naming the endpoint | yes |
 | W-15 | POST and OPTIONS on /upload reach the handler (trailing slash tolerated) | yes |
-
+| W-16 | A GitHub failure during the write steps comes back as a JSON 502 with CORS headers (never an uncaught crash) | yes |
