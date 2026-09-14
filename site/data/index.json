@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T00:15:35+00:00",
+  "generated_at": "2026-09-14T21:42:28+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -94,6 +94,29 @@
           "name": "PA07_Campaign_Finance_2026.xltx",
           "path": "submissions/charlie/2026-09-14-pa-07-campaign-finance-tracker/PA07_Campaign_Finance_2026.xltx",
           "size": 82552
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-14-analysis-workbook",
+      "member": "kiley",
+      "folder": "2026-09-14-analysis-workbook",
+      "title": "Analysis Workbook",
+      "assignment": "Beta Forecast",
+      "has_metadata": true,
+      "submitted": "2026-09-14",
+      "updated": "2026-09-14",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "I built out a full forecast for the PA-07 House race using real voter data. Along the way I checked which towns are easiest/hardest to call, found the town that best mirrors the whole district, and tried three different ways to forecast 2026; a simple trend, a \"beta\" method borrowed from finance, and a regression model. I then tested all three against real 2024 results to see which actually works. Spoiler: they don't fully agree with each other, so the last sheet lays out where they land and why that matters.",
+      "files": [
+        {
+          "name": "PA07_Analysis.xlsx",
+          "path": "submissions/kiley/2026-09-14-analysis-workbook/PA07_Analysis.xlsx",
+          "size": 190387
         }
       ],
       "status": "submitted",
