@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T19:07:08-04:00",
+  "generated_at": "2026-09-14T00:15:35+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -71,6 +71,29 @@
           "name": "PA07_House_Election_Tracker.xlsx",
           "path": "submissions/charlie/2026-09-13-pa-07-house-prediction-market-tracker/PA07_House_Election_Tracker.xlsx",
           "size": 222404
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-09-14-pa-07-campaign-finance-tracker",
+      "member": "charlie",
+      "folder": "2026-09-14-pa-07-campaign-finance-tracker",
+      "title": "PA 07 Campaign Finance Tracker",
+      "assignment": "PA 07 Campaign Finance Tracker",
+      "has_metadata": true,
+      "submitted": "2026-09-14",
+      "updated": "2026-09-14",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "Contains FEC 2018-2024 house elections data and current spending data",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_Campaign_Finance_2026.xltx",
+          "path": "submissions/charlie/2026-09-14-pa-07-campaign-finance-tracker/PA07_Campaign_Finance_2026.xltx",
+          "size": 82552
         }
       ],
       "status": "submitted",
