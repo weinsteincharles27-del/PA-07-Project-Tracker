@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T14:04:09+00:00",
+  "generated_at": "2026-09-15T18:46:38+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -140,6 +140,34 @@
           "name": "All PA07 Voting Data - CORRECTED (paste over merged tab).xlsx",
           "path": "submissions/charlie/2026-09-15-cleaning-all-pa-07-muni-data/All PA07 Voting Data - CORRECTED (paste over merged tab).xlsx",
           "size": 60310
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-09-15-first-merged-data-set",
+      "member": "max",
+      "folder": "2026-09-15-first-merged-data-set",
+      "title": "First Merged Data Set",
+      "assignment": "PA 07 Voter Demographic Data",
+      "has_metadata": true,
+      "submitted": "2026-09-15",
+      "updated": "2026-09-15",
+      "dates_from": "git",
+      "submitted_by": "Max",
+      "notes": "",
+      "body": "The voter demographic data was updated then merged to better fit changes over time.",
+      "files": [
+        {
+          "name": "Merged Municipal (New)-2.xlsx",
+          "path": "submissions/max/2026-09-15-first-merged-data-set/Merged Municipal (New)-2.xlsx",
+          "size": 3430994
+        },
+        {
+          "name": "Merged Precinct (New).xlsx",
+          "path": "submissions/max/2026-09-15-first-merged-data-set/Merged Precinct (New).xlsx",
+          "size": 6174946
         }
       ],
       "status": "submitted",
