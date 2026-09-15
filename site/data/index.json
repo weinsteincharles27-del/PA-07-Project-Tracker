@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T18:46:38+00:00",
+  "generated_at": "2026-09-15T19:49:55+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -117,6 +117,29 @@
           "name": "PA07_Analysis.xlsx",
           "path": "submissions/kiley/2026-09-14-analysis-workbook/PA07_Analysis.xlsx",
           "size": 190387
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-09-15-social-media-sentiment-analysis",
+      "member": "aanika",
+      "folder": "2026-09-15-social-media-sentiment-analysis",
+      "title": "Social Media Sentiment Analysis",
+      "assignment": "Vader Sentiment Analysis",
+      "has_metadata": true,
+      "submitted": "2026-09-15",
+      "updated": "2026-09-15",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "We analyzed 15 Pennsylvania-related Reddit posts and retrieved 282 visible comments from their discussion threads. We organized the posts and comments into 10 common political topics, preserved the verbatim comments with direct Reddit links, and used VADER to classify each comment as positive, negative, or neutral. We then created summary statistics, charts, topic comparisons, political-figure comparisons, and representative quotes to show the main patterns in the discussion. Because the posts focus mainly on statewide Pennsylvania politics rather than PA-7 specifically, the findings provide broader election context rather than a representative picture of PA-7 voters.",
+      "files": [
+        {
+          "name": "PA_2026_Reddit_Topic_Classification(2) (1).xlsx",
+          "path": "submissions/aanika/2026-09-15-social-media-sentiment-analysis/PA_2026_Reddit_Topic_Classification(2) (1).xlsx",
+          "size": 357276
         }
       ],
       "status": "submitted",
