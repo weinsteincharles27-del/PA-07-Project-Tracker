@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T21:42:28+00:00",
+  "generated_at": "2026-09-15T14:04:09+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -117,6 +117,29 @@
           "name": "PA07_Analysis.xlsx",
           "path": "submissions/kiley/2026-09-14-analysis-workbook/PA07_Analysis.xlsx",
           "size": 190387
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-09-15-cleaning-all-pa-07-muni-data",
+      "member": "charlie",
+      "folder": "2026-09-15-cleaning-all-pa-07-muni-data",
+      "title": "Cleaning All PA 07 Muni Data",
+      "assignment": "Data Anomalies Fix",
+      "has_metadata": true,
+      "submitted": "2026-09-15",
+      "updated": "2026-09-15",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "Errors in the \"All PA07 Voting Data\" tab, checked against certified state and county results:\n\nNazareth and Lower Nazareth are swapped. Each row has the other town's numbers in every race for 2018, 2020, 2022, and in 2024 President and Senate. Only 2024 House is correct.\nWilliams Township and Wilson have their President numbers swapped in 2020 and 2024. Senate and House are fine.\nCarbon County's 2022 and 2024 numbers are in the wrong year's columns for all 23 municipalities. 2024 President holds 2022 Senate, 2024 Senate holds 2022 Governor, 2022 Governor holds 2024 Senate, 2022 Senate holds 2024 President. Carbon's 2024 House also uses an early, uncertified count.\nSeven typos in Northampton 2020 House: Bethlehem, Bethlehem Township, Bushkill, Easton, Lower Mount Bethel, Upper Mount Bethel, Wilson. One number wrong in each.\n72 \"Party that won\" labels don't match the votes in the same row, mostly because of the swaps above.\n2020 House incumbent is listed as Republican in every row. It was Susan Wild, a Democrat.\nThree turnout cells contain a party name instead of a number (Bethlehem 2024, Bethlehem Township 2018 and 2022).",
+      "files": [
+        {
+          "name": "All PA07 Voting Data - CORRECTED (paste over merged tab).xlsx",
+          "path": "submissions/charlie/2026-09-15-cleaning-all-pa-07-muni-data/All PA07 Voting Data - CORRECTED (paste over merged tab).xlsx",
+          "size": 60310
         }
       ],
       "status": "submitted",
