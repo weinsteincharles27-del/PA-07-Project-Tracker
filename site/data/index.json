@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T16:24:15+00:00",
+  "generated_at": "2026-09-16T16:24:38+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -214,6 +214,29 @@
           "name": "PA07_Analysis (2).xlsx",
           "path": "submissions/kiley/2026-09-16-backtest-forecast-analysis-update/PA07_Analysis (2).xlsx",
           "size": 197765
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-16-three-forecasting-methods",
+      "member": "kiley",
+      "folder": "2026-09-16-three-forecasting-methods",
+      "title": "Three Forecasting Methods",
+      "assignment": "Forecasting Methods Description",
+      "has_metadata": true,
+      "submitted": "2026-09-16",
+      "updated": "2026-09-16",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "Doc for class presentation",
+      "body": "Breakdown of 3 methods and their strengths/weaknesses",
+      "files": [
+        {
+          "name": "Three_Forecasting_Methods_Class_Presentation.docx",
+          "path": "submissions/kiley/2026-09-16-three-forecasting-methods/Three_Forecasting_Methods_Class_Presentation.docx",
+          "size": 147686
         }
       ],
       "status": "submitted",
