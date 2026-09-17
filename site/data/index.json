@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T16:24:38+00:00",
+  "generated_at": "2026-09-17T18:42:49+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -237,6 +237,34 @@
           "name": "Three_Forecasting_Methods_Class_Presentation.docx",
           "path": "submissions/kiley/2026-09-16-three-forecasting-methods/Three_Forecasting_Methods_Class_Presentation.docx",
           "size": 147686
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-09-17-consolidated-and-reorganized-data",
+      "member": "max",
+      "folder": "2026-09-17-consolidated-and-reorganized-data",
+      "title": "Consolidated and Reorganized Data",
+      "assignment": "17. September",
+      "has_metadata": true,
+      "submitted": "2026-09-17",
+      "updated": "2026-09-17",
+      "dates_from": "git",
+      "submitted_by": "Max",
+      "notes": "",
+      "body": "The precinct and municipal files have been reorganized and consolidated.",
+      "files": [
+        {
+          "name": "PA_07_Municipal_Data (2).xlsx",
+          "path": "submissions/max/2026-09-17-consolidated-and-reorganized-data/PA_07_Municipal_Data (2).xlsx",
+          "size": 2551085
+        },
+        {
+          "name": "PA_07_Precinct_Data.xlsx",
+          "path": "submissions/max/2026-09-17-consolidated-and-reorganized-data/PA_07_Precinct_Data.xlsx",
+          "size": 4101884
         }
       ],
       "status": "submitted",
