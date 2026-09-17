@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T18:42:49+00:00",
+  "generated_at": "2026-09-17T21:46:51+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -237,6 +237,29 @@
           "name": "Three_Forecasting_Methods_Class_Presentation.docx",
           "path": "submissions/kiley/2026-09-16-three-forecasting-methods/Three_Forecasting_Methods_Class_Presentation.docx",
           "size": 147686
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-17-precinct-backtest-forecast-analysis",
+      "member": "kiley",
+      "folder": "2026-09-17-precinct-backtest-forecast-analysis",
+      "title": "Precinct Backtest & Forecast Analysis",
+      "assignment": "Precinct Predictions",
+      "has_metadata": true,
+      "submitted": "2026-09-17",
+      "updated": "2026-09-17",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "Same backtest and forecasting from the municipalities repeated with current precinct data",
+      "files": [
+        {
+          "name": "Precinct Backtest & Forecast Analysis.xlsx",
+          "path": "submissions/kiley/2026-09-17-precinct-backtest-forecast-analysis/Precinct Backtest & Forecast Analysis.xlsx",
+          "size": 571996
         }
       ],
       "status": "submitted",
