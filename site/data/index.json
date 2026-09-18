@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T18:33:53+00:00",
+  "generated_at": "2026-09-18T18:38:59+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -294,8 +294,8 @@
       "review": null
     },
     {
-      "id": "prof-crain/2026-09-18-campaign-finance",
-      "member": "prof-crain",
+      "id": "charlie/2026-09-18-campaign-finance",
+      "member": "charlie",
       "folder": "2026-09-18-campaign-finance",
       "title": "Campaign Finance",
       "assignment": "Updated Campaign Finance",
@@ -303,13 +303,13 @@
       "submitted": "2026-09-18",
       "updated": "2026-09-18",
       "dates_from": "git",
-      "submitted_by": "Prof. Crain",
+      "submitted_by": "Charlie",
       "notes": "",
       "body": "",
       "files": [
         {
           "name": "PA07_Campaign_Finance_2026 (2).xltx",
-          "path": "submissions/prof-crain/2026-09-18-campaign-finance/PA07_Campaign_Finance_2026 (2).xltx",
+          "path": "submissions/charlie/2026-09-18-campaign-finance/PA07_Campaign_Finance_2026 (2).xltx",
           "size": 82552
         }
       ],
@@ -317,8 +317,8 @@
       "review": null
     },
     {
-      "id": "prof-crain/2026-09-18-campaign-spending-and-voter-turnout-rese",
-      "member": "prof-crain",
+      "id": "charlie/2026-09-18-campaign-spending-and-voter-turnout-rese",
+      "member": "charlie",
       "folder": "2026-09-18-campaign-spending-and-voter-turnout-rese",
       "title": "Campaign Spending and Voter Turnout Research",
       "assignment": "Campaign Spending and Voter Turnout Research",
@@ -326,13 +326,13 @@
       "submitted": "2026-09-18",
       "updated": "2026-09-18",
       "dates_from": "git",
-      "submitted_by": "Prof. Crain",
+      "submitted_by": "Charlie",
       "notes": "",
       "body": "",
       "files": [
         {
           "name": "Campaign_Spending_and_Turnout_Research_Memo.docx",
-          "path": "submissions/prof-crain/2026-09-18-campaign-spending-and-voter-turnout-rese/Campaign_Spending_and_Turnout_Research_Memo.docx",
+          "path": "submissions/charlie/2026-09-18-campaign-spending-and-voter-turnout-rese/Campaign_Spending_and_Turnout_Research_Memo.docx",
           "size": 672693
         }
       ],
