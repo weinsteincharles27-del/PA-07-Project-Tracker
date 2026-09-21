@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T18:38:59+00:00",
+  "generated_at": "2026-09-21T21:13:21+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -334,6 +334,29 @@
           "name": "Campaign_Spending_and_Turnout_Research_Memo.docx",
           "path": "submissions/charlie/2026-09-18-campaign-spending-and-voter-turnout-rese/Campaign_Spending_and_Turnout_Research_Memo.docx",
           "size": 672693
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-09-21-national-v-pa-07-campaign-spending-v-dem",
+      "member": "charlie",
+      "folder": "2026-09-21-national-v-pa-07-campaign-spending-v-dem",
+      "title": "National v. PA 07 Campaign Spending v. Democrat Share of Vote Beta Coefficient",
+      "assignment": "National v. PA 07 Spending Beta Coefficient",
+      "has_metadata": true,
+      "submitted": "2026-09-21",
+      "updated": "2026-09-21",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_workbook.xlsx",
+          "path": "submissions/charlie/2026-09-21-national-v-pa-07-campaign-spending-v-dem/PA07_workbook.xlsx",
+          "size": 360346
         }
       ],
       "status": "submitted",
