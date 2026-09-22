@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:45:21+00:00",
+  "generated_at": "2026-09-22T18:45:41+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -403,6 +403,29 @@
           "name": "PA07_Combined_Compared_2020_2022_2024.xlsx",
           "path": "submissions/bryan/2026-09-22-mail-in-ballot/PA07_Combined_Compared_2020_2022_2024.xlsx",
           "size": 26054
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-09-22-pa07-all-regressions",
+      "member": "charlie",
+      "folder": "2026-09-22-pa07-all-regressions",
+      "title": "PA07 All Regressions",
+      "assignment": "PA07 All Regressions",
+      "has_metadata": true,
+      "submitted": "2026-09-22",
+      "updated": "2026-09-22",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "The regressions ask one simple question: does X/Twitter sentiment help predict the 2024 PA-07 House vote better than recent election results alone?\n\nHere’s what we actually did:\n\nStarting point (fundamentals)\nFor each municipality, we used the 2022 Democratic House share to predict the 2024 Democratic House share. That alone works very well — about 97% of the pattern across towns is already explained by 2022.\nAdd social media\nWe then added two things from our X posts: average VADER sentiment (positive/negative tone) and how many posts mentioned that town. We asked whether those improve the prediction.\nAnswer so far\nSentiment and post volume don’t meaningfully help once 2022 vote share is in the model. They’re still useful as an attention / nowcast signal in the bigger forecast mesh — just not as a standalone vote machine.\nAllentown / Bethlehem / Easton check\nWe also looked at just those three cities, using residual errors and candidate-focused, time-weighted sentiment. Same story: weak link, and too few cities to lean on hard.",
+      "files": [
+        {
+          "name": "PA07_All_Regressions (1).xlsx",
+          "path": "submissions/charlie/2026-09-22-pa07-all-regressions/PA07_All_Regressions (1).xlsx",
+          "size": 20987
         }
       ],
       "status": "submitted",
