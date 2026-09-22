@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:45:41+00:00",
+  "generated_at": "2026-09-22T18:47:54+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -357,6 +357,29 @@
           "name": "PA07_workbook.xlsx",
           "path": "submissions/charlie/2026-09-21-national-v-pa-07-campaign-spending-v-dem/PA07_workbook.xlsx",
           "size": 360346
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-09-22-pa07-x-posts",
+      "member": "aanika",
+      "folder": "2026-09-22-pa07-x-posts",
+      "title": "PA07 X Posts",
+      "assignment": "PA07 X Posts",
+      "has_metadata": true,
+      "submitted": "2026-09-22",
+      "updated": "2026-09-22",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "X posts for 2024 and 2026",
+      "files": [
+        {
+          "name": "PA07_X_Posts_2024_and_2026.xlsx",
+          "path": "submissions/aanika/2026-09-22-pa07-x-posts/PA07_X_Posts_2024_and_2026.xlsx",
+          "size": 3423917
         }
       ],
       "status": "submitted",
