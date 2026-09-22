@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:44:13+00:00",
+  "generated_at": "2026-09-22T18:45:21+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -380,6 +380,29 @@
           "name": "PA-7_ Footprint v. Actual Totals.pptx",
           "path": "submissions/bode/2026-09-22-2018-2024-footprint-slideshow/PA-7_ Footprint v. Actual Totals.pptx",
           "size": 714628
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "bryan/2026-09-22-mail-in-ballot",
+      "member": "bryan",
+      "folder": "2026-09-22-mail-in-ballot",
+      "title": "Mail In Ballot",
+      "assignment": "Mail In Ballot",
+      "has_metadata": true,
+      "submitted": "2026-09-22",
+      "updated": "2026-09-22",
+      "dates_from": "git",
+      "submitted_by": "Bryan",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_Combined_Compared_2020_2022_2024.xlsx",
+          "path": "submissions/bryan/2026-09-22-mail-in-ballot/PA07_Combined_Compared_2020_2022_2024.xlsx",
+          "size": 26054
         }
       ],
       "status": "submitted",
