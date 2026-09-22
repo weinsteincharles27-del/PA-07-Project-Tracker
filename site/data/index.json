@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T21:13:21+00:00",
+  "generated_at": "2026-09-22T18:44:13+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -357,6 +357,29 @@
           "name": "PA07_workbook.xlsx",
           "path": "submissions/charlie/2026-09-21-national-v-pa-07-campaign-spending-v-dem/PA07_workbook.xlsx",
           "size": 360346
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "bode/2026-09-22-2018-2024-footprint-slideshow",
+      "member": "bode",
+      "folder": "2026-09-22-2018-2024-footprint-slideshow",
+      "title": "2018-2024 Footprint Slideshow",
+      "assignment": "2018-2024 Footprint Slideshow",
+      "has_metadata": true,
+      "submitted": "2026-09-22",
+      "updated": "2026-09-22",
+      "dates_from": "git",
+      "submitted_by": "Bode",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA-7_ Footprint v. Actual Totals.pptx",
+          "path": "submissions/bode/2026-09-22-2018-2024-footprint-slideshow/PA-7_ Footprint v. Actual Totals.pptx",
+          "size": 714628
         }
       ],
       "status": "submitted",
