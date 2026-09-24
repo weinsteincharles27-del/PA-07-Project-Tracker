@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T18:39:25+00:00",
+  "generated_at": "2026-09-24T18:54:35+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -472,6 +472,29 @@
           "name": "PA07_X_Posts_2022_2024_2026.xlsx",
           "path": "submissions/aanika/2026-09-24-pa07-x-posts-2022-2026/PA07_X_Posts_2022_2024_2026.xlsx",
           "size": 4837619
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-24-meringer-precinct-forecast",
+      "member": "kiley",
+      "folder": "2026-09-24-meringer-precinct-forecast",
+      "title": "Meringer Precinct Forecast",
+      "assignment": "Template Forecast Precinct",
+      "has_metadata": true,
+      "submitted": "2026-09-24",
+      "updated": "2026-09-24",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "3 main methods for forecasting, with backtests, for precinct data",
+      "files": [
+        {
+          "name": "Meringer Precinct Forecast.xlsx",
+          "path": "submissions/kiley/2026-09-24-meringer-precinct-forecast/Meringer Precinct Forecast.xlsx",
+          "size": 299997
         }
       ],
       "status": "submitted",
