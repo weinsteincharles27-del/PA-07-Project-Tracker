@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T18:58:29+00:00",
+  "generated_at": "2026-09-24T19:46:55+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -518,6 +518,29 @@
           "name": "Meringer Municipal Forecast.xlsx",
           "path": "submissions/kiley/2026-09-24-meringer-municipality-forecast/Meringer Municipal Forecast.xlsx",
           "size": 342213
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-24-meringer-municipality-new-tests",
+      "member": "kiley",
+      "folder": "2026-09-24-meringer-municipality-new-tests",
+      "title": "Meringer Municipality NEW TESTS",
+      "assignment": "Possible New Forecasts",
+      "has_metadata": true,
+      "submitted": "2026-09-24",
+      "updated": "2026-09-24",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "Same municipality forecasts and backtests with 4 new possible tests then compared against the current most successful test which is the beta-adjusted",
+      "files": [
+        {
+          "name": "Meringer Municiaplity NEW TESTS.xlsx",
+          "path": "submissions/kiley/2026-09-24-meringer-municipality-new-tests/Meringer Municiaplity NEW TESTS.xlsx",
+          "size": 230238
         }
       ],
       "status": "submitted",
