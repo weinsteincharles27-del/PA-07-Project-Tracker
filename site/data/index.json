@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T18:47:54+00:00",
+  "generated_at": "2026-09-24T18:39:25+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -449,6 +449,29 @@
           "name": "PA07_All_Regressions (1).xlsx",
           "path": "submissions/charlie/2026-09-22-pa07-all-regressions/PA07_All_Regressions (1).xlsx",
           "size": 20987
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-09-24-pa07-x-posts-2022-2026",
+      "member": "aanika",
+      "folder": "2026-09-24-pa07-x-posts-2022-2026",
+      "title": "PA07 X Posts 2022-2026",
+      "assignment": "PA07 2022-2026 Data",
+      "has_metadata": true,
+      "submitted": "2026-09-24",
+      "updated": "2026-09-24",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_X_Posts_2022_2024_2026.xlsx",
+          "path": "submissions/aanika/2026-09-24-pa07-x-posts-2022-2026/PA07_X_Posts_2022_2024_2026.xlsx",
+          "size": 4837619
         }
       ],
       "status": "submitted",
