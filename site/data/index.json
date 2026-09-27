@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T19:46:55+00:00",
+  "generated_at": "2026-09-27T20:16:52+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -564,6 +564,29 @@
           "name": "Meringer Precinct Forecast.xlsx",
           "path": "submissions/kiley/2026-09-24-meringer-precinct-forecast/Meringer Precinct Forecast.xlsx",
           "size": 299997
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-09-27-new-combined-methods",
+      "member": "kiley",
+      "folder": "2026-09-27-new-combined-methods",
+      "title": "New Combined Methods",
+      "assignment": "New Test Methods",
+      "has_metadata": true,
+      "submitted": "2026-09-27",
+      "updated": "2026-09-27",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "New set of various forecast methods with their backtests, and compared against each other",
+      "files": [
+        {
+          "name": "New Combined Methods Meringer.xlsx",
+          "path": "submissions/kiley/2026-09-27-new-combined-methods/New Combined Methods Meringer.xlsx",
+          "size": 348392
         }
       ],
       "status": "submitted",
