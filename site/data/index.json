@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T22:47:37+00:00",
+  "generated_at": "2026-10-01T15:09:19+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -679,6 +679,29 @@
           "name": "PA07_2026_Forecast.xlsx",
           "path": "submissions/charlie/2026-09-30-magic-baseline-test/PA07_2026_Forecast.xlsx",
           "size": 117798
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-10-01-baseline-forecast-4-the-golden-one",
+      "member": "charlie",
+      "folder": "2026-10-01-baseline-forecast-4-the-golden-one",
+      "title": "Baseline Forecast 4 *The Golden One*",
+      "assignment": "Baseline Forecast 4 *The Golden One*",
+      "has_metadata": true,
+      "submitted": "2026-10-01",
+      "updated": "2026-10-01",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_2026_Forecast.xlsx",
+          "path": "submissions/charlie/2026-10-01-baseline-forecast-4-the-golden-one/PA07_2026_Forecast.xlsx",
+          "size": 118012
         }
       ],
       "status": "submitted",
