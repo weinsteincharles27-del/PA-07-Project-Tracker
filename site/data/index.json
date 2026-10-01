@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-01T15:09:19+00:00",
+  "generated_at": "2026-10-01T18:27:26+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -702,6 +702,29 @@
           "name": "PA07_2026_Forecast.xlsx",
           "path": "submissions/charlie/2026-10-01-baseline-forecast-4-the-golden-one/PA07_2026_Forecast.xlsx",
           "size": 118012
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-10-01-muller-forecasts",
+      "member": "max",
+      "folder": "2026-10-01-muller-forecasts",
+      "title": "Muller Forecasts",
+      "assignment": "Forecasts",
+      "has_metadata": true,
+      "submitted": "2026-10-01",
+      "updated": "2026-10-01",
+      "dates_from": "git",
+      "submitted_by": "Max",
+      "notes": "",
+      "body": "Over the past two weeks I forecast using different methods and have a weighting folder for the random forest weights included overall the random forest has higher rates of accuracy over the increased gradient testing and elastic net tests. I also have two sets of each test with half factoring in all election history and half only focusing on 2024-2026.",
+      "files": [
+        {
+          "name": "drive-download-20261001T182408Z-1-001",
+          "path": "submissions/max/2026-10-01-muller-forecasts/drive-download-20261001T182408Z-1-001",
+          "size": 2325144
         }
       ],
       "status": "submitted",
