@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T21:45:45+00:00",
+  "generated_at": "2026-10-06T06:14:40+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -771,6 +771,29 @@
           "name": "PA07_2026_Forecast_Precinct.xlsx",
           "path": "submissions/charlie/2026-10-05-precinct-baseline-forecast/PA07_2026_Forecast_Precinct.xlsx",
           "size": 102603
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "bryan/2026-10-06-pa07-demographics-municipalities-acs-1-9",
+      "member": "bryan",
+      "folder": "2026-10-06-pa07-demographics-municipalities-acs-1-9",
+      "title": "PA07_Demographics_municipalities_ACS (1) 9/9",
+      "assignment": "PA07_Demographics_municipalities_ACS",
+      "has_metadata": true,
+      "submitted": "2026-10-06",
+      "updated": "2026-10-06",
+      "dates_from": "git",
+      "submitted_by": "Bryan",
+      "notes": "",
+      "body": "Demographics on the counties on the municipality level",
+      "files": [
+        {
+          "name": "PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
+          "path": "submissions/bryan/2026-10-06-pa07-demographics-municipalities-acs-1-9/PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
+          "size": 183566
         }
       ],
       "status": "submitted",
