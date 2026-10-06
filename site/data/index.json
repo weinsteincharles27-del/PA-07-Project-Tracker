@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T19:25:00+00:00",
+  "generated_at": "2026-10-06T19:34:59+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -794,6 +794,119 @@
           "name": "PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
           "path": "submissions/bryan/2026-10-06-pa07-demographics-municipalities-acs-1-9/PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
           "size": 183566
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-10-06-forecast-attempts",
+      "member": "charlie",
+      "folder": "2026-10-06-forecast-attempts",
+      "title": "Forecast Attempts",
+      "assignment": "6. October",
+      "has_metadata": true,
+      "submitted": "2026-10-06",
+      "updated": "2026-10-06",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "My attempts to produce a different forecast than Charlie using different weights to see which one would be the most accurate and to provide insights to where we should weigh certain variables.",
+      "files": [
+        {
+          "name": "PA07_Municipal_Forecasts_ABC.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Forecasts_ABC.xlsx",
+          "size": 214783
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC-2.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC-2.xlsx",
+          "size": 193070
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC.xlsx",
+          "size": 196903
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v10_BestBacktests.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v10_BestBacktests.xlsx",
+          "size": 418902
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v11_MostAccurate.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v11_MostAccurate.xlsx",
+          "size": 419822
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v3.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v3.xlsx",
+          "size": 199666
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v6_CurrentMap.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v6_CurrentMap.xlsx",
+          "size": 251142
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v7_AllYearBacktests.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v7_AllYearBacktests.xlsx",
+          "size": 495222
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v8_Fixed.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v8_Fixed.xlsx",
+          "size": 499786
+        },
+        {
+          "name": "PA07_Municipal_Results_Forecasts_ABC_v9_FeederRule.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Municipal_Results_Forecasts_ABC_v9_FeederRule.xlsx",
+          "size": 415764
+        },
+        {
+          "name": "PA07_Precinct_Forecasts_ABC.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Forecasts_ABC.xlsx",
+          "size": 592310
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC.xlsx",
+          "size": 561513
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v10_BestBacktests.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v10_BestBacktests.xlsx",
+          "size": 1362596
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v11_MostAccurate.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v11_MostAccurate.xlsx",
+          "size": 1363739
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v3.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v3.xlsx",
+          "size": 562827
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v6_CurrentMap.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v6_CurrentMap.xlsx",
+          "size": 765507
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v7_AllYearBacktests.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v7_AllYearBacktests.xlsx",
+          "size": 1673384
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v8_Fixed.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v8_Fixed.xlsx",
+          "size": 1676921
+        },
+        {
+          "name": "PA07_Precinct_Results_Forecasts_ABC_v9_FeederRule.xlsx",
+          "path": "submissions/charlie/2026-10-06-forecast-attempts/PA07_Precinct_Results_Forecasts_ABC_v9_FeederRule.xlsx",
+          "size": 1358919
         }
       ],
       "status": "submitted",
