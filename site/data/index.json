@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T06:14:40+00:00",
+  "generated_at": "2026-10-06T19:25:00+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -794,6 +794,29 @@
           "name": "PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
           "path": "submissions/bryan/2026-10-06-pa07-demographics-municipalities-acs-1-9/PA07_Demographics_municipalities_ACS (1) 9_9.xlsm",
           "size": 183566
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "charlie/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei",
+      "member": "charlie",
+      "folder": "2026-10-06-mail-in-ballot-weighted-forecast-pre-wei",
+      "title": "MAIL-IN BALLOT WEIGHTED FORECAST PRE-WEINSTEIN REVISIONS",
+      "assignment": "MAIL-IN BALLOT WEIGHTED FORECAST PRE-WEINSTEIN REVISIONS",
+      "has_metadata": true,
+      "submitted": "2026-10-06",
+      "updated": "2026-10-06",
+      "dates_from": "git",
+      "submitted_by": "Charlie",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "Brewer 2026 Mail Ballot Forecast.xlsx",
+          "path": "submissions/charlie/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei/Brewer 2026 Mail Ballot Forecast.xlsx",
+          "size": 155270
         }
       ],
       "status": "submitted",
