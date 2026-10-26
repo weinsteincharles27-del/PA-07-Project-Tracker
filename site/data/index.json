@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T15:20:40+00:00",
+  "generated_at": "2026-10-26T16:11:22+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -1068,6 +1068,29 @@
           "name": "UPDATED Forecast Presentation.pdf",
           "path": "submissions/prof-crain/2026-10-15-updated-forecast-presentation/UPDATED Forecast Presentation.pdf",
           "size": 98694
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-10-26-all-forecasts-meringer",
+      "member": "kiley",
+      "folder": "2026-10-26-all-forecasts-meringer",
+      "title": "All Forecasts Meringer",
+      "assignment": "Comprehensive Forecast Workbook",
+      "has_metadata": true,
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "Completely compiled workbook of every forecast I have run since the beginning of the project, compared against one another",
+      "files": [
+        {
+          "name": "PA07_All_Forecasts_Meringer.xlsx",
+          "path": "submissions/kiley/2026-10-26-all-forecasts-meringer/PA07_All_Forecasts_Meringer.xlsx",
+          "size": 1684507
         }
       ],
       "status": "submitted",
