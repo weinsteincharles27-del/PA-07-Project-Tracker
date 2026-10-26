@@ -15,7 +15,11 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  # Newest push wins. The build regenerates the whole index from the repo, so
+  # cancelling an older run loses nothing, and a run that wedges waiting on the
+  # Pages environment can never block every later submission (it did for 20 days
+  # in October, which is why this is true and not false).
+  cancel-in-progress: true
 
 jobs:
   build-and-publish:
