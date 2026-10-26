@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T19:36:27+00:00",
+  "generated_at": "2026-10-26T15:20:40+00:00",
   "group": "PA-07 Project",
   "repo": "weinsteincharles27-del/PA-07-Project-Tracker",
   "branch": "main",
@@ -800,6 +800,29 @@
       "review": null
     },
     {
+      "id": "bode/2026-10-06-muni-data-2018-2024",
+      "member": "bode",
+      "folder": "2026-10-06-muni-data-2018-2024",
+      "title": "Muni Data 2018-2024",
+      "assignment": "Muni Data 2018-2024",
+      "has_metadata": true,
+      "submitted": "2026-10-06",
+      "updated": "2026-10-06",
+      "dates_from": "git",
+      "submitted_by": "Bode",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "Muni Data 2018-2024.xlsx",
+          "path": "submissions/bode/2026-10-06-muni-data-2018-2024/Muni Data 2018-2024.xlsx",
+          "size": 29163
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
       "id": "bryan/2026-10-06-pa07-demographics-municipalities-acs-1-9",
       "member": "bryan",
       "folder": "2026-10-06-pa07-demographics-municipalities-acs-1-9",
@@ -936,22 +959,229 @@
       "review": null
     },
     {
-      "id": "charlie/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei",
-      "member": "charlie",
+      "id": "aanika/2026-10-08-organized-by-party-and-candidates-revise",
+      "member": "aanika",
+      "folder": "2026-10-08-organized-by-party-and-candidates-revise",
+      "title": "(organized by party and candidates) Revised with the help of Bode",
+      "assignment": "PA07_X_Posts_2022_2024_2026",
+      "has_metadata": true,
+      "submitted": "2026-10-08",
+      "updated": "2026-10-08",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07_X_Posts_2022_2024_2026 (organized by party and candidates) - REVISED tabs (3).xlsx",
+          "path": "submissions/aanika/2026-10-08-organized-by-party-and-candidates-revise/PA07_X_Posts_2022_2024_2026 (organized by party and candidates) - REVISED tabs (3).xlsx",
+          "size": 7980525
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-10-08-pa07-does-sentiment-predict-vote-change-",
+      "member": "aanika",
+      "folder": "2026-10-08-pa07-does-sentiment-predict-vote-change-",
+      "title": "PA07 Does Sentiment Predict Vote Change 2022-2024-2026",
+      "assignment": "Mean Sentiment Change",
+      "has_metadata": true,
+      "submitted": "2026-10-08",
+      "updated": "2026-10-08",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "",
+      "files": [
+        {
+          "name": "PA07 Does Sentiment Predict Vote Change 2022-2024-2026 (repost-share weighted) (5).xlsx",
+          "path": "submissions/aanika/2026-10-08-pa07-does-sentiment-predict-vote-change-/PA07 Does Sentiment Predict Vote Change 2022-2024-2026 (repost-share weighted) (5).xlsx",
+          "size": 23999
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "aanika/2026-10-08-pa07-projected-vote-change-from-sentimen",
+      "member": "aanika",
+      "folder": "2026-10-08-pa07-projected-vote-change-from-sentimen",
+      "title": "PA07 Projected Vote Change from Sentiment 2026",
+      "assignment": "Regression Vote Change",
+      "has_metadata": true,
+      "submitted": "2026-10-08",
+      "updated": "2026-10-08",
+      "dates_from": "git",
+      "submitted_by": "Aanika",
+      "notes": "",
+      "body": "Regression to show predicted vote changes",
+      "files": [
+        {
+          "name": "PA07 Projected Vote Change from Sentiment 2026 (simple) (3).xlsx",
+          "path": "submissions/aanika/2026-10-08-pa07-projected-vote-change-from-sentimen/PA07 Projected Vote Change from Sentiment 2026 (simple) (3).xlsx",
+          "size": 7881
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-10-08-gen-z-report",
+      "member": "max",
+      "folder": "2026-10-08-gen-z-report",
+      "title": "Gen Z Report",
+      "assignment": "8. October",
+      "has_metadata": true,
+      "submitted": "2026-10-08",
+      "updated": "2026-10-08",
+      "dates_from": "git",
+      "submitted_by": "Max",
+      "notes": "",
+      "body": "I reorganized the Gen Z report to now include how it compares to other generations, and also included precinct data",
+      "files": [
+        {
+          "name": "Gen Z Generation Report.xlsx",
+          "path": "submissions/max/2026-10-08-gen-z-report/Gen Z Generation Report.xlsx",
+          "size": 132505
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "prof-crain/2026-10-15-updated-forecast-presentation",
+      "member": "prof-crain",
+      "folder": "2026-10-15-updated-forecast-presentation",
+      "title": "UPDATED Forecast Presentation",
+      "assignment": "Updated Presentation with Changes",
+      "has_metadata": true,
+      "submitted": "2026-10-15",
+      "updated": "2026-10-15",
+      "dates_from": "git",
+      "submitted_by": "Prof. Crain",
+      "notes": "",
+      "body": "Notes from the presentation and made changes based on the basic formatting issues and things that needed to be addressed more directly",
+      "files": [
+        {
+          "name": "UPDATED Forecast Presentation.pdf",
+          "path": "submissions/prof-crain/2026-10-15-updated-forecast-presentation/UPDATED Forecast Presentation.pdf",
+          "size": 98694
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-10-26-bellwether-analysis",
+      "member": "kiley",
+      "folder": "2026-10-26-bellwether-analysis",
+      "title": "Bellwether Analysis",
+      "assignment": "Initial Bellwether Analysis",
+      "has_metadata": true,
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "This is just to provide some context as to how I determined what to do with the bellwether information.",
+      "files": [
+        {
+          "name": "Bellwether Analysis.pdf",
+          "path": "submissions/kiley/2026-10-26-bellwether-analysis/Bellwether Analysis.pdf",
+          "size": 212150
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-10-26-bellwether-analysis-2",
+      "member": "kiley",
+      "folder": "2026-10-26-bellwether-analysis-2",
+      "title": "Bellwether Analysis",
+      "assignment": "Bellwether Analysis",
+      "has_metadata": true,
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "Initial findings with Bellwether analysis",
+      "files": [
+        {
+          "name": "Bellwether Analysis.pdf",
+          "path": "submissions/kiley/2026-10-26-bellwether-analysis-2/Bellwether Analysis.pdf",
+          "size": 212150
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-10-26-bellwether-forecast",
+      "member": "kiley",
+      "folder": "2026-10-26-bellwether-forecast",
+      "title": "Bellwether Forecast",
+      "assignment": "Bellwether Forecast",
+      "has_metadata": true,
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "Complete Workbook",
+      "body": "Following class on Thursday, I decided to run a forecast and backtest to determine if combining the bellwether information with the baseline could be useful.",
+      "files": [
+        {
+          "name": "Bellwether + Baseline PA07 Forecast Meringer.xlsx",
+          "path": "submissions/kiley/2026-10-26-bellwether-forecast/Bellwether + Baseline PA07 Forecast Meringer.xlsx",
+          "size": 199286
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "kiley/2026-10-26-bellwether-workbook",
+      "member": "kiley",
+      "folder": "2026-10-26-bellwether-workbook",
+      "title": "Bellwether Workbook",
+      "assignment": "Bellwether Forecast",
+      "has_metadata": true,
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
+      "dates_from": "git",
+      "submitted_by": "Kiley",
+      "notes": "",
+      "body": "Blended forecasts and backtests for bellwether and baseline combined",
+      "files": [
+        {
+          "name": "Bellwether + Baseline PA07 Forecast Meringer.xlsx",
+          "path": "submissions/kiley/2026-10-26-bellwether-workbook/Bellwether + Baseline PA07 Forecast Meringer.xlsx",
+          "size": 199286
+        }
+      ],
+      "status": "submitted",
+      "review": null
+    },
+    {
+      "id": "max/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei",
+      "member": "max",
       "folder": "2026-10-06-mail-in-ballot-weighted-forecast-pre-wei",
       "title": "MAIL-IN BALLOT WEIGHTED FORECAST PRE-WEINSTEIN REVISIONS",
       "assignment": "MAIL-IN BALLOT WEIGHTED FORECAST PRE-WEINSTEIN REVISIONS",
       "has_metadata": true,
-      "submitted": "2026-10-06",
-      "updated": "2026-10-06",
+      "submitted": "2026-10-26",
+      "updated": "2026-10-26",
       "dates_from": "git",
-      "submitted_by": "Charlie",
+      "submitted_by": "Charlie Weinstein",
       "notes": "",
       "body": "",
       "files": [
         {
           "name": "Brewer 2026 Mail Ballot Forecast.xlsx",
-          "path": "submissions/charlie/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei/Brewer 2026 Mail Ballot Forecast.xlsx",
+          "path": "submissions/max/2026-10-06-mail-in-ballot-weighted-forecast-pre-wei/Brewer 2026 Mail Ballot Forecast.xlsx",
           "size": 155270
         }
       ],
